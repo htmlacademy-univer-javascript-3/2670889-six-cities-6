@@ -72,7 +72,7 @@ export const OfferPage: React.FC<OfferPageProps> = ({
   };
 
   const getRatingWidth = (ratingValue: number) => `${(ratingValue / 5) * 100}%`;
-  
+
   return (
     <div className="page">
       <Header />
@@ -80,9 +80,9 @@ export const OfferPage: React.FC<OfferPageProps> = ({
         <section className="offer">
           <div className="offer__gallery-container container">
             <div className="offer__gallery">
-              {images.map((image, index) => (
+              {images.map((image) => (
                 <div key={image} className="offer__image-wrapper">
-                  <img className="offer__image" src={image} alt={`Photo ${index + 1}`} />
+                  <img className="offer__image" src={image} alt="Place photo" />
                 </div>
               ))}
             </div>
@@ -112,12 +112,20 @@ export const OfferPage: React.FC<OfferPageProps> = ({
                   <span style={{ width: getRatingWidth(rating) }}></span>
                   <span className="visually-hidden">Rating</span>
                 </div>
-                <span className="offer__rating-value rating__value">{rating}</span>
+                <span className="offer__rating-value rating__value">
+                  {rating}
+                </span>
               </div>
               <ul className="offer__features">
-                <li className="offer__feature offer__feature--entire">{type}</li>
-                <li className="offer__feature offer__feature--bedrooms">{bedrooms} Bedrooms</li>
-                <li className="offer__feature offer__feature--adults">Max {maxAdults} adults</li>
+                <li className="offer__feature offer__feature--entire">
+                  {type}
+                </li>
+                <li className="offer__feature offer__feature--bedrooms">
+                  {bedrooms} Bedrooms
+                </li>
+                <li className="offer__feature offer__feature--adults">
+                  Max {maxAdults} adults
+                </li>
               </ul>
               <div className="offer__price">
                 <b className="offer__price-value">&euro;{price}</b>
@@ -148,11 +156,13 @@ export const OfferPage: React.FC<OfferPageProps> = ({
                     />
                   </div>
                   <span className="offer__user-name">{host.name}</span>
-                  {host.isPro && <span className="offer__user-status">Pro</span>}
+                  {host.isPro && (
+                    <span className="offer__user-status">Pro</span>
+                  )}
                 </div>
                 <div className="offer__description">
-                  {description.split('\n').map((paragraph, index) => (
-                    <p key={index} className="offer__text">
+                  {description.split('\n').map((paragraph) => (
+                    <p key={btoa(paragraph)} className="offer__text">
                       {paragraph}
                     </p>
                   ))}
@@ -160,7 +170,8 @@ export const OfferPage: React.FC<OfferPageProps> = ({
               </div>
               <section className="offer__reviews reviews">
                 <h2 className="reviews__title">
-                  Reviews &middot; <span className="reviews__amount">{reviews.length}</span>
+                  Reviews &middot;{' '}
+                  <span className="reviews__amount">{reviews.length}</span>
                 </h2>
                 <ul className="reviews__list">
                   {reviews.map((review) => (
@@ -175,7 +186,9 @@ export const OfferPage: React.FC<OfferPageProps> = ({
                             alt="Reviews avatar"
                           />
                         </div>
-                        <span className="reviews__user-name">{review.user.name}</span>
+                        <span className="reviews__user-name">
+                          {review.user.name}
+                        </span>
                       </div>
                       <div className="reviews__info">
                         <div className="reviews__rating rating">
@@ -195,8 +208,14 @@ export const OfferPage: React.FC<OfferPageProps> = ({
                     </li>
                   ))}
                 </ul>
-                <form className="reviews__form form" onSubmit={handleReviewSubmit}>
-                  <label className="reviews__label form__label" htmlFor="review">
+                <form
+                  className="reviews__form form"
+                  onSubmit={handleReviewSubmit}
+                >
+                  <label
+                    className="reviews__label form__label"
+                    htmlFor="review"
+                  >
                     Your review
                   </label>
                   <div className="reviews__rating-form form__rating">
@@ -214,9 +233,17 @@ export const OfferPage: React.FC<OfferPageProps> = ({
                         <label
                           htmlFor={`${star}-stars`}
                           className="reviews__rating-label form__rating-label"
-                          title={['terribly', 'badly', 'not bad', 'good', 'perfect'][5 - star]}
+                          title={
+                            ['terribly', 'badly', 'not bad', 'good', 'perfect'][
+                              5 - star
+                            ]
+                          }
                         >
-                          <svg className="form__star-image" width="37" height="33">
+                          <svg
+                            className="form__star-image"
+                            width="37"
+                            height="33"
+                          >
                             <use xlinkHref="#icon-star"></use>
                           </svg>
                         </label>
@@ -234,8 +261,9 @@ export const OfferPage: React.FC<OfferPageProps> = ({
                   <div className="reviews__button-wrapper">
                     <p className="reviews__help">
                       To submit review please make sure to set{' '}
-                      <span className="reviews__star">rating</span> and describe your stay with at
-                      least <b className="reviews__text-amount">50 characters</b>.
+                      <span className="reviews__star">rating</span> and describe
+                      your stay with at least{' '}
+                      <b className="reviews__text-amount">50 characters</b>.
                     </p>
                     <button
                       className="reviews__submit form__submit button"
@@ -253,10 +281,12 @@ export const OfferPage: React.FC<OfferPageProps> = ({
         </section>
         <div className="container">
           <section className="near-places places">
-            <h2 className="near-places__title">Other places in the neighbourhood</h2>
+            <h2 className="near-places__title">
+              Other places in the neighbourhood
+            </h2>
             <div className="near-places__list places__list">
-              {nearbyOffers.map((offer) => (
-                <ArticleItem key={offer.id} offer={offer} />
+              {nearbyOffers.map((nearbyOffer) => (
+                <ArticleItem key={nearbyOffer.id} offer={nearbyOffer} />
               ))}
             </div>
           </section>

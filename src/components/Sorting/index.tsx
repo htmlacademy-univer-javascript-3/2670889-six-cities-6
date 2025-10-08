@@ -58,7 +58,7 @@ export const Sorting: React.FC<Props> = ({
   };
 
   return (
-    <form className="places__sorting" action="#" method="get" ref={dropdownRef}>
+    <form className="places__sorting" ref={dropdownRef}>
       <span className="places__sorting-caption">Sort by </span>
       <span
         className="places__sorting-type"
