@@ -23,14 +23,9 @@ type FavoritesPageProps = {
 };
 
 export const FavoritesPage: React.FC<FavoritesPageProps> = ({ favorites, onFavoriteClick }) => {
-  const getFavoriteCount = () => {
-    return Object.values(favorites).reduce((total, cityOffers) => total + cityOffers.length, 0);
-  };
-
   return (
     <div className="page">
       <Header />
-
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
           <section className="favorites">
@@ -67,7 +62,6 @@ export const FavoritesPage: React.FC<FavoritesPageProps> = ({ favorites, onFavor
           </section>
         </div>
       </main>
-
       <footer className="footer container">
         <a className="footer__logo-link" href="main.html">
           <img

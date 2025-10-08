@@ -5,14 +5,14 @@ type OfferCardProps = {
   onFavoriteClick?: (id: string, isFavorite: boolean) => void;
 };
 
+const getRatingWidth = (ratingValue: number) => `${(ratingValue / 5) * 100}%`;
+
 export const ArticleItem: React.FC<OfferCardProps> = ({ offer, onFavoriteClick }) => {
   const { id, title, type, price, isFavorite, isPremium, rating, previewImage } = offer;
 
   const handleFavoriteClick = () => {
     onFavoriteClick?.(id, !isFavorite);
   };
-
-  const getRatingWidth = (ratingValue: number) => `${(ratingValue / 5) * 100}%`;
 
   return (
     <article className="cities__card place-card">

@@ -31,10 +31,16 @@ type OfferDetails = Offer & {
 type OfferPageProps = {
   offer: OfferDetails;
   nearbyOffers: Offer[];
+  onFavoriteToggle?: (offerId: string, isFavorite: boolean) => void;
+  onReviewSubmit?: (rating: number, text: string) => void;
 };
 
-export const OfferPage: React.FC<OfferPageProps> = ({ offer, nearbyOffers }) => {
-  const [isFavorite, setIsFavorite] = useState(offer.isFavorite);
+export const OfferPage: React.FC<OfferPageProps> = ({
+  offer,
+  nearbyOffers,
+  onFavoriteToggle,
+  onReviewSubmit,
+}) => {
   const [reviewRating, setReviewRating] = useState(0);
   const [reviewText, setReviewText] = useState('');
 
@@ -44,6 +50,7 @@ export const OfferPage: React.FC<OfferPageProps> = ({ offer, nearbyOffers }) => 
     price,
     rating,
     isPremium,
+    isFavorite,
     bedrooms,
     maxAdults,
     amenities,
@@ -54,24 +61,21 @@ export const OfferPage: React.FC<OfferPageProps> = ({ offer, nearbyOffers }) => 
   } = offer;
 
   const handleFavoriteClick = () => {
-    setIsFavorite(!isFavorite);
-    // Здесь будет логика обновления на сервере
+    onFavoriteToggle?.(offer.id, !isFavorite);
   };
 
   const handleReviewSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Логика отправки отзыва
-    console.log({ rating: reviewRating, text: reviewText });
+    onReviewSubmit?.(reviewRating, reviewText);
     setReviewRating(0);
     setReviewText('');
   };
 
   const getRatingWidth = (ratingValue: number) => `${(ratingValue / 5) * 100}%`;
-
+  
   return (
     <div className="page">
       <Header />
-
       <main className="page__main page__main--offer">
         <section className="offer">
           <div className="offer__gallery-container container">
