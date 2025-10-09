@@ -50,24 +50,23 @@ export const Sorting: React.FC<Props> = ({
     setIsOpen(!isOpen);
   };
 
-  const getSelectedLabel = () =>
-    options.find((option) => option.value === selectedOption)?.label || options[0]?.label;
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLSpanElement>) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggleDropdown();
+    }
+  };
 
   return (
-    <form className="places__sorting" action="#" method="get" ref={dropdownRef}>
+    <form className="places__sorting" ref={dropdownRef}>
       <span className="places__sorting-caption">Sort by </span>
       <span
         className="places__sorting-type"
         tabIndex={0}
         onClick={toggleDropdown}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            toggleDropdown();
-          }
-        }}
+        onKeyDown={handleKeyDown}
       >
-        {getSelectedLabel()}
+        {options.find((option) => option.value === selectedOption)?.label || options[0]?.label}
         <svg
           className={`places__sorting-arrow ${isOpen ? 'places__sorting-arrow--open' : ''}`}
           width="7"

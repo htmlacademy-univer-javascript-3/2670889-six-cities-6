@@ -2,17 +2,12 @@ import { Offer } from '../../interfaces/article';
 
 type OfferCardProps = {
   offer: Offer;
-  onFavoriteClick?: (id: string, isFavorite: boolean) => void;
 };
 
-export const ArticleItem: React.FC<OfferCardProps> = ({ offer, onFavoriteClick }) => {
-  const { id, title, type, price, isFavorite, isPremium, rating, previewImage } = offer;
+const getRatingWidth = (ratingValue: number) => `${(ratingValue / 5) * 100}%`;
 
-  const handleFavoriteClick = () => {
-    onFavoriteClick?.(id, !isFavorite);
-  };
-
-  const getRatingWidth = (ratingValue: number) => `${(ratingValue / 5) * 100}%`;
+export const ArticleItem: React.FC<OfferCardProps> = ({ offer }) => {
+  const { title, type, price, isFavorite, isPremium, rating, previewImage } = offer;
 
   return (
     <article className="cities__card place-card">
@@ -43,7 +38,6 @@ export const ArticleItem: React.FC<OfferCardProps> = ({ offer, onFavoriteClick }
               isFavorite ? 'place-card__bookmark-button--active' : ''
             }`}
             type="button"
-            onClick={handleFavoriteClick}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>

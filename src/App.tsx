@@ -6,10 +6,6 @@ interface Props {
   offers: Offer[];
 }
 
-const App: React.FC<Props> = ({ offers }) => (
-  <>
-    <Main offers={offers} />
-  </>
-);
+const App: React.FC<Props> = ({ offers }) => <Main offers={offers} />;
 
 export default App;
