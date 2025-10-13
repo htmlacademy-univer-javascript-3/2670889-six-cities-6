@@ -1,4 +1,4 @@
-import { Offer } from '../../interfaces/article';
+import { Offer } from '../interfaces/article';
 
 export const mockOffers: Offer[] = [
   {

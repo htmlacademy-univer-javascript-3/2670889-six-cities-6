@@ -1,5 +1,3 @@
-import { Header } from '../components/Header';
-
 export const LoginPage: React.FC = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -7,8 +5,6 @@ export const LoginPage: React.FC = () => {
 
   return (
     <div className="page page--gray page--login">
-      <Header />
-
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">
