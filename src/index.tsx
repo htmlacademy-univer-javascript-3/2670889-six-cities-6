@@ -1,12 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
+import { BrowserRouter } from 'react-router-dom';
 import App from './App';
-import { mockOffers } from './components/ArticleList/mock-data';
+import { mockOffers } from './mocks/offers';
 
-const root = ReactDOM.createRoot(document.getElementById('root') as HTMLElement);
+const root = ReactDOM.createRoot(
+  document.getElementById('root') as HTMLElement,
+);
 
 root.render(
   <React.StrictMode>
-    <App offers={mockOffers} />
-  </React.StrictMode>
+    <BrowserRouter>
+      <App offers={mockOffers} />
+    </BrowserRouter>
+  </React.StrictMode>,
 );

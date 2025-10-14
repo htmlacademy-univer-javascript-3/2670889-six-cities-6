@@ -1,5 +1,4 @@
 import { ArticleItem } from '../components/ArticleItem';
-import { Header } from '../components/Header';
 
 type FavoriteOffer = {
   id: string;
@@ -23,8 +22,7 @@ type FavoritesPageProps = {
 };
 
 export const FavoritesPage: React.FC<FavoritesPageProps> = ({ favorites }) => (
-  <div className="page">
-    <Header />
+  <>
     <main className="page__main page__main--favorites">
       <div className="page__favorites-container container">
         <section className="favorites">
@@ -68,5 +66,5 @@ export const FavoritesPage: React.FC<FavoritesPageProps> = ({ favorites }) => (
         />
       </a>
     </footer>
-  </div>
+  </>
 );
