@@ -1,22 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-
-type SortOption = {
-  value: string;
-  label: string;
-};
+import { defaultOptions } from '../../mocks/sorting';
+import { SortOption } from '../../types/sort';
 
 type Props = {
   options?: SortOption[];
   defaultOption?: string;
   onSortChange?: (option: string) => void;
 };
-
-const defaultOptions: SortOption[] = [
-  { value: 'popular', label: 'Popular' },
-  { value: 'price-low-to-high', label: 'Price: low to high' },
-  { value: 'price-high-to-low', label: 'Price: high to low' },
-  { value: 'top-rated', label: 'Top rated first' },
-];
 
 export const Sorting: React.FC<Props> = ({
   options = defaultOptions,
@@ -29,7 +19,10 @@ export const Sorting: React.FC<Props> = ({
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -66,7 +59,8 @@ export const Sorting: React.FC<Props> = ({
         onClick={toggleDropdown}
         onKeyDown={handleKeyDown}
       >
-        {options.find((option) => option.value === selectedOption)?.label || options[0]?.label}
+        {options.find((option) => option.value === selectedOption)?.label ||
+          options[0]?.label}
         <svg
           className={`places__sorting-arrow ${isOpen ? 'places__sorting-arrow--open' : ''}`}
           width="7"

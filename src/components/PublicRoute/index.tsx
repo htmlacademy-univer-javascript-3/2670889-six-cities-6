@@ -1,14 +1,12 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 interface PublicRouteProps {
-  children: React.ReactElement;
   isAuthorized: boolean;
   redirectPath?: string;
 }
 
 export const PublicRoute: React.FC<PublicRouteProps> = ({
-  children,
   isAuthorized,
   redirectPath = '/',
 }) => {
@@ -18,5 +16,5 @@ export const PublicRoute: React.FC<PublicRouteProps> = ({
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
 
-  return children;
+  return <Outlet />;
 };

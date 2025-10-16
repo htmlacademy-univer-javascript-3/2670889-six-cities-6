@@ -6,9 +6,9 @@ type City = {
   href: string;
 };
 
-type Props = {
+export type Props = {
   cities: City[];
-  onCityChange?: (city: City, index: number) => void;
+  onCityChange?: (city: City) => void;
 };
 
 const TabItem: React.FC<City & { isActive: boolean; onClick: () => void }> = ({
@@ -36,7 +36,7 @@ export const Tabs: React.FC<Props> = ({ cities, onCityChange }) => {
 
   const handleTabClick = (index: number) => {
     setActiveIndex(index);
-    onCityChange?.(cities[index], index);
+    onCityChange?.(cities[index]);
   };
 
   return (
@@ -48,7 +48,7 @@ export const Tabs: React.FC<Props> = ({ cities, onCityChange }) => {
               {...city}
               key={city.id}
               isActive={city.id === cities[activeIndex]?.id}
-              onClick={() => handleTabClick(cities.findIndex((c) => c.id === city.id))}
+              onClick={ () => handleTabClick(cities.findIndex((c) => c.id === city.id)) }
             />
           ))}
         </ul>
