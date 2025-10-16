@@ -538,3 +538,5 @@ export const mockOffers: Offer[] = [
     ],
   },
 ];
+
+export const favoriteMockOffers = mockOffers.filter((offer) => offer.isFavorite);
