@@ -1,14 +1,12 @@
 import React from 'react';
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 
 interface PrivateRouteProps {
-  children: React.ReactElement;
   isAuthorized: boolean;
   redirectPath?: string;
 }
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({
-  children,
   isAuthorized,
   redirectPath = '/login',
 }) => {
@@ -18,5 +16,5 @@ export const PrivateRoute: React.FC<PrivateRouteProps> = ({
     return <Navigate to={redirectPath} state={{ from: location }} replace />;
   }
 
-  return children;
+  return <Outlet />;
 };

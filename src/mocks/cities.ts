@@ -1,31 +1,31 @@
 export const cities = [
   {
-    id: 0,
+    id: 1,
     name: 'Paris',
     href: '#',
   },
   {
-    id: 1,
+    id: 2,
     name: 'Cologne',
     href: '#',
   },
   {
-    id: 2,
+    id: 3,
     name: 'Brussels',
     href: '#',
   },
   {
-    id: 3,
+    id: 4,
     name: 'Amsterdam',
     href: '#',
   },
   {
-    id: 4,
+    id: 5,
     name: 'Hamburg',
     href: '#',
   },
   {
-    id: 5,
+    id: 6,
     name: 'Dusseldorf',
     href: '#',
   },

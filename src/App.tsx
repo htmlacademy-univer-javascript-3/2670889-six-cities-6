@@ -3,9 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import { Layout } from './components/Layout';
 import { PrivateRoute } from './components/PrivateRoute';
 import { PublicRoute } from './components/PublicRoute';
-import { Offer } from './interfaces/article';
+import { Offer } from './types/offer';
 import { mockGroupedFavorites } from './mocks/favourites';
-import { mockOfferDetails } from './mocks/offer';
 import NotFound from './pages/404';
 import { FavoritesPage } from './pages/Favourites';
 import { LoginPage } from './pages/Login';
@@ -22,27 +21,20 @@ const App: React.FC<Props> = ({ offers }) => (
   <Routes>
     <Route path="/" element={<Layout />}>
       <Route index element={<Main offers={offers} />} />
-      <Route
-        path="/favourites"
-        element={
-          <PrivateRoute isAuthorized={isAuthorized}>
-            <FavoritesPage favorites={mockGroupedFavorites} />
-          </PrivateRoute>
-        }
-      />
+      <Route element={<PrivateRoute isAuthorized={isAuthorized} />}>
+        <Route
+          path="/favourites"
+          element={<FavoritesPage favorites={mockGroupedFavorites} />}
+        />
+      </Route>
+      <Route element={<PublicRoute isAuthorized={isAuthorized} />}>
+        <Route path="/login" element={<LoginPage />} />
+      </Route>
       <Route
         path="/offer/:id"
-        element={<OfferPage offers={mockOfferDetails} nearbyOffers={offers} />}
+        element={<OfferPage />}
       />
     </Route>
-    <Route
-      path="/login"
-      element={
-        <PublicRoute isAuthorized={isAuthorized}>
-          <LoginPage />
-        </PublicRoute>
-      }
-    />
     <Route path="*" element={<NotFound />} />
   </Routes>
 );

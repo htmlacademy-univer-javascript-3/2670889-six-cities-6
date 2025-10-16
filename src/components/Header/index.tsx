@@ -1,12 +1,17 @@
+import { Link } from 'react-router-dom';
 import { Container } from '../Container';
 import { NavBar } from '../NavBar';
 
-export const Header: React.FC = () => (
+type HeaderProps = {
+  isAuthorized: boolean;
+};
+
+export const Header: React.FC<HeaderProps> = ({ isAuthorized }) => (
   <header className="header">
     <Container>
       <div className="header__wrapper">
         <div className="header__left">
-          <a className="header__logo-link header__logo-link--active">
+          <Link className="header__logo-link" to="/">
             <img
               className="header__logo"
               src="img/logo.svg"
@@ -14,9 +19,9 @@ export const Header: React.FC = () => (
               width="81"
               height="41"
             />
-          </a>
+          </Link>
         </div>
-        <NavBar />
+        <NavBar isAuthorized={isAuthorized} />
       </div>
     </Container>
   </header>
