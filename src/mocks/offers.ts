@@ -1,3 +1,4 @@
+import { BASE_URL } from '../paths';
 import { Offer } from '../types/offer';
 
 export const mockOffers: Offer[] = [
@@ -15,7 +16,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: true,
     rating: 4.8,
-    previewImage: 'img/apartment-01.jpg',
+    previewImage: `${BASE_URL}img/apartment-01.jpg`,
     bedrooms: 3,
     maxAdults: 4,
     views: 1250,
@@ -29,16 +30,16 @@ export const mockOffers: Offer[] = [
       'Dishwasher',
     ],
     images: [
-      'img/apartment-01.jpg',
-      'img/apartment-02.jpg',
-      'img/apartment-03.jpg',
-      'img/room.jpg',
-      'img/studio-01.jpg',
-      'img/apartment-01.jpg',
+      `${BASE_URL}img/apartment-01.jpg`,
+      `${BASE_URL}img/apartment-02.jpg`,
+      `${BASE_URL}img/apartment-03.jpg`,
+      `${BASE_URL}img/room.jpg`,
+      `${BASE_URL}img/studio-01.jpg`,
+      `${BASE_URL}img/apartment-01.jpg`,
     ],
     host: {
       name: 'Angelina',
-      avatar: 'img/avatar-angelina.jpg',
+      avatar: `${BASE_URL}img/avatar-angelina.jpg`,
       isPro: true,
     },
     description: `A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.
@@ -49,7 +50,7 @@ export const mockOffers: Offer[] = [
         id: 'r1',
         user: {
           name: 'Max',
-          avatar: 'img/avatar-max.jpg',
+          avatar: `${BASE_URL}img/avatar-max.jpg`,
         },
         rating: 4,
         text: 'A quiet cozy and picturesque that hides behind a a river by the unique lightness of Amsterdam. The building is green and from 18th century.',
@@ -59,7 +60,7 @@ export const mockOffers: Offer[] = [
         id: 'r2',
         user: {
           name: 'Sarah',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 5,
         text: 'Perfect location, beautiful apartment. The host was very helpful and responsive. Would definitely stay here again!',
@@ -81,15 +82,19 @@ export const mockOffers: Offer[] = [
     isFavorite: true,
     isPremium: false,
     rating: 4.2,
-    previewImage: 'img/room.jpg',
+    previewImage: `${BASE_URL}img/room.jpg`,
     bedrooms: 1,
     maxAdults: 2,
     views: 890,
     amenities: ['Wi-Fi', 'Heating', 'Kitchen', 'Cable TV'],
-    images: ['img/room.jpg', 'img/apartment-02.jpg', 'img/apartment-03.jpg'],
+    images: [
+      `${BASE_URL}img/room.jpg`,
+      `${BASE_URL}img/apartment-02.jpg`,
+      `${BASE_URL}img/apartment-03.jpg`,
+    ],
     host: {
       name: 'Pierre',
-      avatar: 'img/avatar.svg',
+      avatar: `${BASE_URL}img/avatar.svg`,
       isPro: false,
     },
     description:
@@ -99,7 +104,7 @@ export const mockOffers: Offer[] = [
         id: 'r3',
         user: {
           name: 'Emma',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 4,
         text: 'Great value for money. The room was clean and the location in Montmartre was perfect.',
@@ -121,7 +126,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: false,
     rating: 4.5,
-    previewImage: 'img/apartment-02.jpg',
+    previewImage: `${BASE_URL}img/apartment-02.jpg`,
     bedrooms: 2,
     maxAdults: 3,
     views: 980,
@@ -133,10 +138,14 @@ export const mockOffers: Offer[] = [
       'Washing machine',
       'Terrace',
     ],
-    images: ['img/apartment-02.jpg', 'img/apartment-01.jpg', 'img/room.jpg'],
+    images: [
+      `${BASE_URL}img/apartment-02.jpg`,
+      `${BASE_URL}img/apartment-01.jpg`,
+      `${BASE_URL}img/room.jpg`,
+    ],
     host: {
       name: 'Sophie',
-      avatar: 'img/avatar-angelina.jpg',
+      avatar: `${BASE_URL}img/avatar-angelina.jpg`,
       isPro: true,
     },
     description:
@@ -146,7 +155,7 @@ export const mockOffers: Offer[] = [
         id: 'r4',
         user: {
           name: 'Lucas',
-          avatar: 'img/avatar-max.jpg',
+          avatar: `${BASE_URL}img/avatar-max.jpg`,
         },
         rating: 5,
         text: 'Amazing view and great location. The apartment had everything we needed.',
@@ -156,7 +165,7 @@ export const mockOffers: Offer[] = [
         id: 'r5',
         user: {
           name: 'Mia',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 4,
         text: 'Beautiful apartment with character. The canal view was spectacular.',
@@ -178,7 +187,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: true,
     rating: 4.9,
-    previewImage: 'img/apartment-03.jpg',
+    previewImage: `${BASE_URL}img/apartment-03.jpg`,
     bedrooms: 2,
     maxAdults: 4,
     views: 2100,
@@ -192,10 +201,14 @@ export const mockOffers: Offer[] = [
       'Balcony',
       'Air conditioning',
     ],
-    images: ['img/apartment-03.jpg', 'img/apartment-01.jpg', 'img/room.jpg'],
+    images: [
+      `${BASE_URL}img/apartment-03.jpg`,
+      `${BASE_URL}img/apartment-01.jpg`,
+      `${BASE_URL}img/room.jpg`,
+    ],
     host: {
       name: 'Jean',
-      avatar: 'img/avatar-max.jpg',
+      avatar: `${BASE_URL}img/avatar-max.jpg`,
       isPro: true,
     },
     description:
@@ -205,7 +218,7 @@ export const mockOffers: Offer[] = [
         id: 'r6',
         user: {
           name: 'Anna',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 5,
         text: 'The view of the Eiffel Tower was magical! Perfect Parisian experience.',
@@ -227,15 +240,15 @@ export const mockOffers: Offer[] = [
     isFavorite: true,
     isPremium: false,
     rating: 4.3,
-    previewImage: 'img/apartment-01.jpg',
+    previewImage: `${BASE_URL}img/apartment-01.jpg`,
     bedrooms: 1,
     maxAdults: 2,
     views: 450,
     amenities: ['Wi-Fi', 'Heating', 'Kitchenette', 'TV', 'Washing machine'],
-    images: ['img/studio-01.jpg', 'img/room.jpg'],
+    images: [`${BASE_URL}img/studio-01.jpg`, `${BASE_URL}img/room.jpg`],
     host: {
       name: 'Klaus',
-      avatar: 'img/avatar.svg',
+      avatar: `${BASE_URL}img/avatar.svg`,
       isPro: false,
     },
     description:
@@ -245,7 +258,7 @@ export const mockOffers: Offer[] = [
         id: 'r7',
         user: {
           name: 'David',
-          avatar: 'img/avatar-max.jpg',
+          avatar: `${BASE_URL}img/avatar-max.jpg`,
         },
         rating: 4,
         text: 'Great location near the cathedral. Clean and modern apartment.',
@@ -267,7 +280,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: true,
     rating: 4.9,
-    previewImage: 'img/apartment-01.jpg',
+    previewImage: `${BASE_URL}img/apartment-01.jpg`,
     bedrooms: 3,
     maxAdults: 4,
     views: 1500,
@@ -282,13 +295,13 @@ export const mockOffers: Offer[] = [
       'Air conditioning',
     ],
     images: [
-      'img/apartment-01.jpg',
-      'img/apartment-02.jpg',
-      'img/apartment-03.jpg',
+      `${BASE_URL}img/apartment-01.jpg`,
+      `${BASE_URL}img/apartment-02.jpg`,
+      `${BASE_URL}img/apartment-03.jpg`,
     ],
     host: {
       name: 'Hans',
-      avatar: 'img/avatar-angelina.jpg',
+      avatar: `${BASE_URL}img/avatar-angelina.jpg`,
       isPro: true,
     },
     description:
@@ -298,7 +311,7 @@ export const mockOffers: Offer[] = [
         id: 'r8',
         user: {
           name: 'Jessica',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 5,
         text: 'Absolutely breathtaking views of the Rhine! The apartment was luxurious.',
@@ -320,7 +333,7 @@ export const mockOffers: Offer[] = [
     isFavorite: true,
     isPremium: true,
     rating: 4.7,
-    previewImage: 'img/room.jpg',
+    previewImage: `${BASE_URL}img/room.jpg`,
     bedrooms: 2,
     maxAdults: 4,
     views: 1100,
@@ -332,10 +345,14 @@ export const mockOffers: Offer[] = [
       'Washing machine',
       'Garden',
     ],
-    images: ['img/room.jpg', 'img/apartment-01.jpg', 'img/apartment-02.jpg'],
+    images: [
+      `${BASE_URL}img/room.jpg`,
+      `${BASE_URL}img/apartment-01.jpg`,
+      `${BASE_URL}img/apartment-02.jpg`,
+    ],
     host: {
       name: 'Marie',
-      avatar: 'img/avatar-angelina.jpg',
+      avatar: `${BASE_URL}img/avatar-angelina.jpg`,
       isPro: true,
     },
     description:
@@ -345,7 +362,7 @@ export const mockOffers: Offer[] = [
         id: 'r9',
         user: {
           name: 'Robert',
-          avatar: 'img/avatar-max.jpg',
+          avatar: `${BASE_URL}img/avatar-max.jpg`,
         },
         rating: 5,
         text: 'Perfect location for exploring Brussels. The house was full of character.',
@@ -355,7 +372,7 @@ export const mockOffers: Offer[] = [
         id: 'r10',
         user: {
           name: 'Sophia',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 4,
         text: 'Lovely house in the heart of Brussels. Walking distance to all major attractions.',
@@ -377,7 +394,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: false,
     rating: 4.3,
-    previewImage: 'img/apartment-02.jpg',
+    previewImage: `${BASE_URL}img/apartment-02.jpg`,
     bedrooms: 1,
     maxAdults: 2,
     views: 670,
@@ -389,10 +406,10 @@ export const mockOffers: Offer[] = [
       'Daily cleaning',
       'Mini bar',
     ],
-    images: ['img/apartment-02.jpg', 'img/room.jpg'],
+    images: [`${BASE_URL}img/apartment-02.jpg`, `${BASE_URL}img/room.jpg`],
     host: {
       name: 'Hotel Hamburg',
-      avatar: 'img/avatar.svg',
+      avatar: `${BASE_URL}img/avatar.svg`,
       isPro: false,
     },
     description:
@@ -402,7 +419,7 @@ export const mockOffers: Offer[] = [
         id: 'r11',
         user: {
           name: 'Michael',
-          avatar: 'img/avatar-max.jpg',
+          avatar: `${BASE_URL}img/avatar-max.jpg`,
         },
         rating: 4,
         text: 'Clean and comfortable room. Great location for exploring Hamburg.',
@@ -424,7 +441,7 @@ export const mockOffers: Offer[] = [
     isFavorite: true,
     isPremium: false,
     rating: 4.6,
-    previewImage: 'img/apartment-03.jpg',
+    previewImage: `${BASE_URL}img/apartment-03.jpg`,
     bedrooms: 3,
     maxAdults: 5,
     views: 920,
@@ -438,13 +455,13 @@ export const mockOffers: Offer[] = [
       'Balcony',
     ],
     images: [
-      'img/apartment-03.jpg',
-      'img/apartment-01.jpg',
-      'img/apartment-02.jpg',
+      `${BASE_URL}img/apartment-03.jpg`,
+      `${BASE_URL}img/apartment-01.jpg`,
+      `${BASE_URL}img/apartment-02.jpg`,
     ],
     host: {
       name: 'Hamburg Homes',
-      avatar: 'img/avatar.svg',
+      avatar: `${BASE_URL}img/avatar.svg`,
       isPro: false,
     },
     description:
@@ -454,7 +471,7 @@ export const mockOffers: Offer[] = [
         id: 'r12',
         user: {
           name: 'The Schmidt Family',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 5,
         text: 'Perfect for our family! Modern apartment in a great location.',
@@ -476,7 +493,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: true,
     rating: 4.8,
-    previewImage: 'img/apartment-01.jpg',
+    previewImage: `${BASE_URL}img/apartment-01.jpg`,
     bedrooms: 2,
     maxAdults: 3,
     views: 1350,
@@ -488,10 +505,14 @@ export const mockOffers: Offer[] = [
       'Coffee machine',
       'Original Art Nouveau features',
     ],
-    images: ['img/studio-01.jpg', 'img/room.jpg', 'img/apartment-03.jpg'],
+    images: [
+      `${BASE_URL}img/studio-01.jpg`,
+      `${BASE_URL}img/room.jpg`,
+      `${BASE_URL}img/apartment-03.jpg`,
+    ],
     host: {
       name: 'Brussels Heritage',
-      avatar: 'img/avatar-angelina.jpg',
+      avatar: `${BASE_URL}img/avatar-angelina.jpg`,
       isPro: true,
     },
     description:
@@ -501,7 +522,7 @@ export const mockOffers: Offer[] = [
         id: 'r13',
         user: {
           name: 'Art Lovers',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 5,
         text: 'The Art Nouveau details were breathtaking! True Brussels experience.',
@@ -523,15 +544,15 @@ export const mockOffers: Offer[] = [
     isFavorite: true,
     isPremium: true,
     rating: 4.4,
-    previewImage: 'img/room.jpg',
+    previewImage: `${BASE_URL}img/room.jpg`,
     bedrooms: 1,
     maxAdults: 2,
     views: 1750,
     amenities: ['Wi-Fi', 'Heating', 'Kitchenette', 'TV', 'Air conditioning'],
-    images: ['img/room.jpg', 'img/apartment-02.jpg'],
+    images: [`${BASE_URL}img/room.jpg`, `${BASE_URL}img/apartment-02.jpg`],
     host: {
       name: 'Paris Perfect',
-      avatar: 'img/avatar-angelina.jpg',
+      avatar: `${BASE_URL}img/avatar-angelina.jpg`,
       isPro: true,
     },
     description:
@@ -541,7 +562,7 @@ export const mockOffers: Offer[] = [
         id: 'r14',
         user: {
           name: 'Traveler',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 4,
         text: 'Incredible location! Small but perfectly formed for exploring Paris.',
@@ -563,7 +584,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: true,
     rating: 4.9,
-    previewImage: 'img/apartment-01.jpg',
+    previewImage: `${BASE_URL}img/apartment-01.jpg`,
     bedrooms: 2,
     maxAdults: 4,
     views: 1420,
@@ -576,10 +597,14 @@ export const mockOffers: Offer[] = [
       'Historical features',
       'Courtyard',
     ],
-    images: ['img/apartment-01.jpg', 'img/apartment-02.jpg', 'img/room.jpg'],
+    images: [
+      `${BASE_URL}img/apartment-01.jpg`,
+      `${BASE_URL}img/apartment-02.jpg`,
+      `${BASE_URL}img/room.jpg`,
+    ],
     host: {
       name: 'Historic Hamburg',
-      avatar: 'img/avatar-max.jpg',
+      avatar: `${BASE_URL}img/avatar-max.jpg`,
       isPro: true,
     },
     description:
@@ -589,7 +614,7 @@ export const mockOffers: Offer[] = [
         id: 'r15',
         user: {
           name: 'History Buff',
-          avatar: 'img/avatar.svg',
+          avatar: `${BASE_URL}img/avatar.svg`,
         },
         rating: 5,
         text: 'Living in the Speicherstadt was a dream! Authentic Hamburg experience.',
