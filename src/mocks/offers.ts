@@ -7,6 +7,11 @@ export const mockOffers: Offer[] = [
     type: 'apartment',
     price: 120,
     city: 'Amsterdam',
+    location: {
+      latitude: 52.3909553943508,
+      longitude: 4.85309666406198,
+      zoom: 16,
+    },
     isFavorite: false,
     isPremium: true,
     rating: 4.8,
@@ -68,6 +73,11 @@ export const mockOffers: Offer[] = [
     type: 'room',
     price: 80,
     city: 'Paris',
+    location: {
+      latitude: 48.864716,
+      longitude: 2.349014,
+      zoom: 16,
+    },
     isFavorite: true,
     isPremium: false,
     rating: 4.2,
@@ -103,6 +113,11 @@ export const mockOffers: Offer[] = [
     type: 'apartment',
     price: 132,
     city: 'Amsterdam',
+    location: {
+      latitude: 52.3609553943508,
+      longitude: 4.85309666406198,
+      zoom: 16,
+    },
     isFavorite: false,
     isPremium: false,
     rating: 4.5,
@@ -155,6 +170,11 @@ export const mockOffers: Offer[] = [
     type: 'apartment',
     price: 220,
     city: 'Paris',
+    location: {
+      latitude: 48.858844,
+      longitude: 2.294351,
+      zoom: 16,
+    },
     isFavorite: false,
     isPremium: true,
     rating: 4.9,
@@ -199,6 +219,11 @@ export const mockOffers: Offer[] = [
     type: 'apartment',
     price: 95,
     city: 'Cologne',
+    location: {
+      latitude: 50.941278,
+      longitude: 6.958281,
+      zoom: 16,
+    },
     isFavorite: true,
     isPremium: false,
     rating: 4.3,
@@ -234,6 +259,11 @@ export const mockOffers: Offer[] = [
     type: 'apartment',
     price: 180,
     city: 'Cologne',
+    location: {
+      latitude: 50.9364553943508,
+      longitude: 6.959974,
+      zoom: 16,
+    },
     isFavorite: false,
     isPremium: true,
     rating: 4.9,
@@ -282,6 +312,11 @@ export const mockOffers: Offer[] = [
     type: 'house',
     price: 150,
     city: 'Brussels',
+    location: {
+      latitude: 50.846723,
+      longitude: 4.352423,
+      zoom: 16,
+    },
     isFavorite: true,
     isPremium: true,
     rating: 4.7,
@@ -334,6 +369,11 @@ export const mockOffers: Offer[] = [
     type: 'hotel',
     price: 110,
     city: 'Hamburg',
+    location: {
+      latitude: 53.551086,
+      longitude: 9.993682,
+      zoom: 16,
+    },
     isFavorite: false,
     isPremium: false,
     rating: 4.3,
@@ -376,6 +416,11 @@ export const mockOffers: Offer[] = [
     type: 'apartment',
     price: 140,
     city: 'Hamburg',
+    location: {
+      latitude: 53.543764,
+      longitude: 10.009913,
+      zoom: 16,
+    },
     isFavorite: true,
     isPremium: false,
     rating: 4.6,
@@ -423,6 +468,11 @@ export const mockOffers: Offer[] = [
     type: 'apartment',
     price: 125,
     city: 'Brussels',
+    location: {
+      latitude: 50.8379553943508,
+      longitude: 4.939309666406198,
+      zoom: 16,
+    },
     isFavorite: false,
     isPremium: true,
     rating: 4.8,
@@ -465,6 +515,11 @@ export const mockOffers: Offer[] = [
     type: 'studio',
     price: 135,
     city: 'Paris',
+    location: {
+      latitude: 48.873728,
+      longitude: 2.295028,
+      zoom: 16,
+    },
     isFavorite: true,
     isPremium: true,
     rating: 4.4,
@@ -500,6 +555,11 @@ export const mockOffers: Offer[] = [
     type: 'house',
     price: 190,
     city: 'Hamburg',
+    location: {
+      latitude: 53.545065,
+      longitude: 10.000654,
+      zoom: 16,
+    },
     isFavorite: false,
     isPremium: true,
     rating: 4.9,
@@ -539,4 +599,6 @@ export const mockOffers: Offer[] = [
   },
 ];
 
-export const favoriteMockOffers = mockOffers.filter((offer) => offer.isFavorite);
+export const favoriteMockOffers = mockOffers.filter(
+  (offer) => offer.isFavorite,
+);

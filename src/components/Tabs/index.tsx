@@ -1,10 +1,5 @@
 import { useState } from 'react';
-
-type City = {
-  id: number;
-  name: string;
-  href: string;
-};
+import { City } from '../../types/city';
 
 export type Props = {
   cities: City[];
@@ -48,7 +43,9 @@ export const Tabs: React.FC<Props> = ({ cities, onCityChange }) => {
               {...city}
               key={city.id}
               isActive={city.id === cities[activeIndex]?.id}
-              onClick={ () => handleTabClick(cities.findIndex((c) => c.id === city.id)) }
+              onClick={() =>
+                handleTabClick(cities.findIndex((c) => c.id === city.id))
+              }
             />
           ))}
         </ul>

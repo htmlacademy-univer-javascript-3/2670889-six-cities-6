@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { ArticleList } from '../components/ArticleList';
+import Map from '../components/Map';
 import { Sorting } from '../components/Sorting';
 import { Tabs } from '../components/Tabs';
 import { cities } from '../mocks/cities';
@@ -12,7 +13,6 @@ interface Props {
 const Main: React.FC<Props> = ({ offers }) => {
   const [selectedCity, setSelectedCity] = useState(cities[0]);
   const [selectedSort, setSelectedSort] = useState('popular');
-  const [activeCardId, setActiveCardId] = useState<string | null>(null);
 
   const filteredOffers = useMemo(
     () => offers.filter((offer) => offer.city === selectedCity.name),
@@ -47,10 +47,6 @@ const Main: React.FC<Props> = ({ offers }) => {
     setSelectedSort(sortOption);
   };
 
-  const handleCardHover = (id: string | null) => {
-    setActiveCardId(id || null);
-  };
-
   return (
     <main className="page__main page__main--index">
       <h1 className="visually-hidden">Cities</h1>
@@ -68,12 +64,10 @@ const Main: React.FC<Props> = ({ offers }) => {
               onSortChange={handleSortChange}
               defaultOption={selectedSort}
             />
-            <ArticleList offers={sortedOffers} onCardHover={handleCardHover} />
+            <ArticleList offers={sortedOffers} />
           </section>
           <div className="cities__right-section">
-            <section className="cities__map map">
-              {activeCardId && `Active card: ${activeCardId}`}
-            </section>
+            <Map city={selectedCity.location} offers={filteredOffers} />
           </div>
         </div>
       </div>
