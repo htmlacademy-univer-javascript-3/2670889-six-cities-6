@@ -1,5 +1,6 @@
-import { BASE_URL } from '../paths';
 import { Offer } from '../types/offer';
+
+const BASE_URL = import.meta.env.BASE_URL;
 
 export const mockOffers: Offer[] = [
   {
