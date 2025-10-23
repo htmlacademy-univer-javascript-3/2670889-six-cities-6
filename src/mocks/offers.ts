@@ -10,7 +10,7 @@ export const mockOffers: Offer[] = [
     isFavorite: false,
     isPremium: true,
     rating: 4.8,
-    previewImage: '/img/apartment-01.jpg',
+    previewImage: './img/apartment-01.jpg',
     bedrooms: 3,
     maxAdults: 4,
     views: 1250,
