@@ -44,8 +44,7 @@ export const Tabs: React.FC<Props> = ({ cities, onCityChange }) => {
               key={city.id}
               isActive={city.id === cities[activeIndex]?.id}
               onClick={() =>
-                handleTabClick(cities.findIndex((c) => c.id === city.id))
-              }
+                handleTabClick(cities.findIndex((c) => c.id === city.id))}
             />
           ))}
         </ul>

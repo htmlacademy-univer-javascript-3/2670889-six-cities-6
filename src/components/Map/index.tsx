@@ -7,7 +7,6 @@ import { Offer } from '../../types/offer';
 type MapProps = {
   city: Location;
   offers: Offer[];
-  className?: string;
 };
 
 const createCustomIcon = () =>
