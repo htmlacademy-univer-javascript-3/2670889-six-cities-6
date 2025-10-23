@@ -8,9 +8,12 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
   base: '/2670889-six-cities-6/',
+  define: {
+    BASE_URL: JSON.stringify('/2670889-six-cities-6/'),
+  },
   build: {
     outDir: 'dist',
-    emptyOutDir: true
+    emptyOutDir: true,
   },
   test: {
     globals: true,
