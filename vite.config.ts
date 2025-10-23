@@ -10,6 +10,7 @@ export default defineConfig({
   base: '/2670889-six-cities-6/',
   build: {
     outDir: 'dist',
+    emptyOutDir: true
   },
   test: {
     globals: true,

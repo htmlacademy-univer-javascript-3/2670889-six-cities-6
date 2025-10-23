@@ -10,7 +10,7 @@ const root = ReactDOM.createRoot(
 
 root.render(
   <React.StrictMode>
-    <BrowserRouter>
+    <BrowserRouter basename="/2670889-six-cities-6/">
       <App offers={mockOffers} favorites={favoriteMockOffers} />
     </BrowserRouter>
   </React.StrictMode>,
