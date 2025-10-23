@@ -14,7 +14,7 @@ export const Header: React.FC<HeaderProps> = ({ isAuthorized }) => (
           <Link className="header__logo-link" to="/">
             <img
               className="header__logo"
-              src="img/logo.svg"
+              src={`${import.meta.env.BASE_URL}/img/logo.svg`}
               alt="6 cities logo"
               width="81"
               height="41"
