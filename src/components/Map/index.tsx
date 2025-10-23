@@ -11,7 +11,7 @@ type MapProps = {
 
 const createCustomIcon = () =>
   leaflet.icon({
-    iconUrl: 'img/pin.svg',
+    iconUrl: `${import.meta.env.BASE_URL}/img/pin.svg`,
     iconSize: [27, 39],
     iconAnchor: [13.5, 39],
   });
