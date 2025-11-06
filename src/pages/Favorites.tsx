@@ -1,13 +1,12 @@
 import { Link } from 'react-router-dom';
 import { ArticleItem } from '../components/ArticleItem';
 import { Offer } from '../types/offer';
+import { useAppSelector } from '../store/hooks/redux';
 
-type FavoritesPageProps = {
-  favorites: Offer[];
-  onFavoriteToggle?: (id: string, isFavorite: boolean) => void;
-};
+export const FavoritesPage: React.FC = () => {
+  const { offers } = useAppSelector((state) => state.offers);
+  const favorites = offers.filter((offer) => offer.isFavorite);
 
-export const FavoritesPage: React.FC<FavoritesPageProps> = ({ favorites }) => {
   const groupedFavorites = favorites.reduce<{ [city: string]: Offer[] }>(
     (acc, offer) => {
       if (!acc[offer.city]) {

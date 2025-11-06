@@ -1,19 +1,20 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { ArticleList } from '../components/ArticleList';
 import Map from '../components/Map';
 import { Sorting } from '../components/Sorting';
 import { Tabs } from '../components/Tabs';
-import { cities } from '../mocks/cities';
-import { Offer } from '../types/offer';
+import { useAppDispatch, useAppSelector } from '../store/hooks/redux';
+import {
+  setActiveOfferId,
+  setSelectedCity,
+  setSelectedSort,
+} from '../store/slices/offers-slice';
 
-interface Props {
-  offers: Offer[];
-}
+const Main: React.FC = () => {
+  const dispatch = useAppDispatch();
 
-const Main: React.FC<Props> = ({ offers }) => {
-  const [selectedCity, setSelectedCity] = useState(cities[0]);
-  const [selectedSort, setSelectedSort] = useState('popular');
-  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
+  const { offers, cities, selectedCity, selectedSort, activeOfferId } =
+    useAppSelector((state) => state.offers);
 
   const filteredOffers = useMemo(
     () => offers.filter((offer) => offer.city === selectedCity.name),
@@ -41,16 +42,16 @@ const Main: React.FC<Props> = ({ offers }) => {
   }, [filteredOffers, selectedSort]);
 
   const handleCityChange = (city: (typeof cities)[0]) => {
-    setSelectedCity(city);
-    setActiveOfferId(null); // Сбрасываем активное предложение при смене города
+    dispatch(setSelectedCity(city));
+    dispatch(setActiveOfferId(null));
   };
 
   const handleSortChange = (sortOption: string) => {
-    setSelectedSort(sortOption);
+    dispatch(setSelectedSort(sortOption));
   };
 
   const handleCardHover = (offerId: string | null) => {
-    setActiveOfferId(offerId);
+    dispatch(setActiveOfferId(offerId));
   };
 
   return (

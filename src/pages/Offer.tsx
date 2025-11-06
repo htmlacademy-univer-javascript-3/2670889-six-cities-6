@@ -14,9 +14,7 @@ type OfferPageProps = {
   onFavoriteToggle?: (offerId: string, isFavorite: boolean) => void;
 };
 
-export const OfferPage: React.FC<OfferPageProps> = ({
-  onFavoriteToggle
-}) => {
+export const OfferPage: React.FC<OfferPageProps> = ({ onFavoriteToggle }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [currentOffer, setCurrentOffer] = useState<Offer | null>(null);
