@@ -40,15 +40,13 @@ export const ArticleItem: React.FC<OfferCardProps> = ({
           </div>
         )}
         <div className="cities__image-wrapper place-card__image-wrapper">
-          <a href="#">
-            <img
-              className="place-card__image"
-              src={previewImage}
-              width="260"
-              height="200"
-              alt="Place image"
-            />
-          </a>
+          <img
+            className="place-card__image"
+            src={previewImage}
+            width="260"
+            height="200"
+            alt="Place image"
+          />
         </div>
         <div className="place-card__info">
           <div className="place-card__price-wrapper">
@@ -76,9 +74,7 @@ export const ArticleItem: React.FC<OfferCardProps> = ({
               <span className="visually-hidden">Rating</span>
             </div>
           </div>
-          <h2 className="place-card__name">
-            <a href="#">{title}</a>
-          </h2>
+          <h2 className="place-card__name">{title}</h2>
           <p className="place-card__type">{type}</p>
         </div>
       </article>

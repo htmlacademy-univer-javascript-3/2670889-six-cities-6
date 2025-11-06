@@ -1,13 +1,8 @@
 import { Review } from '../../../types/review';
-import { ReviewForm } from '../ReviewsForm';
-
-type ReviewsSectionProps = {
-  reviews: Review[];
-};
 
 const getRatingWidth = (ratingValue: number) => `${(ratingValue / 5) * 100}%`;
 
-const ReviewsList: React.FC<{ reviews: Review[] }> = ({ reviews }) => (
+export const ReviewsList: React.FC<{ reviews: Review[] }> = ({ reviews }) => (
   <ul className="reviews__list">
     {reviews.map((review) => (
       <li key={review.id} className="reviews__item">
@@ -42,20 +37,3 @@ const ReviewsList: React.FC<{ reviews: Review[] }> = ({ reviews }) => (
     ))}
   </ul>
 );
-
-export const ReviewsSection: React.FC<ReviewsSectionProps> = ({ reviews }) => {
-  const sortedReviews = [...reviews].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
-
-  return (
-    <section className="offer__reviews reviews">
-      <h2 className="reviews__title">
-        Reviews &middot;{' '}
-        <span className="reviews__amount">{sortedReviews.length}</span>
-      </h2>
-      <ReviewsList reviews={sortedReviews.slice(0, 10)} />
-      <ReviewForm />
-    </section>
-  );
-};
