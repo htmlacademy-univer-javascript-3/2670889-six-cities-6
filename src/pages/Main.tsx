@@ -13,6 +13,7 @@ interface Props {
 const Main: React.FC<Props> = ({ offers }) => {
   const [selectedCity, setSelectedCity] = useState(cities[0]);
   const [selectedSort, setSelectedSort] = useState('popular');
+  const [activeOfferId, setActiveOfferId] = useState<string | null>(null);
 
   const filteredOffers = useMemo(
     () => offers.filter((offer) => offer.city === selectedCity.name),
@@ -41,10 +42,15 @@ const Main: React.FC<Props> = ({ offers }) => {
 
   const handleCityChange = (city: (typeof cities)[0]) => {
     setSelectedCity(city);
+    setActiveOfferId(null); // Сбрасываем активное предложение при смене города
   };
 
   const handleSortChange = (sortOption: string) => {
     setSelectedSort(sortOption);
+  };
+
+  const handleCardHover = (offerId: string | null) => {
+    setActiveOfferId(offerId);
   };
 
   return (
@@ -64,10 +70,14 @@ const Main: React.FC<Props> = ({ offers }) => {
               onSortChange={handleSortChange}
               defaultOption={selectedSort}
             />
-            <ArticleList offers={sortedOffers} />
+            <ArticleList offers={sortedOffers} onCardHover={handleCardHover} />
           </section>
           <div className="cities__right-section">
-            <Map city={selectedCity.location} offers={filteredOffers} />
+            <Map
+              city={selectedCity.location}
+              offers={filteredOffers}
+              activeOfferId={activeOfferId}
+            />
           </div>
         </div>
       </div>

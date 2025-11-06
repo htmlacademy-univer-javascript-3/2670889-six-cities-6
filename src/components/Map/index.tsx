@@ -7,16 +7,17 @@ import { Offer } from '../../types/offer';
 type MapProps = {
   city: Location;
   offers: Offer[];
+  activeOfferId?: string | null;
 };
 
-const createCustomIcon = () =>
+const createCustomIcon = (isActive: boolean = false) =>
   leaflet.icon({
-    iconUrl: `${import.meta.env.BASE_URL}/img/pin.svg`,
+    iconUrl: `${import.meta.env.BASE_URL}img/pin${isActive ? '-active' : ''}.svg`,
     iconSize: [27, 39],
     iconAnchor: [13.5, 39],
   });
 
-function Map({ city, offers }: MapProps): JSX.Element {
+const Map = ({ city, offers, activeOfferId }: MapProps): JSX.Element => {
   const points = offers.map((offer: Offer) => ({
     id: offer.id,
     location: offer.location,
@@ -64,9 +65,11 @@ function Map({ city, offers }: MapProps): JSX.Element {
       markersLayer.current.clearLayers();
 
       points.forEach((point) => {
+        const isActive = point.id === activeOfferId;
+
         leaflet
           .marker([point.location.latitude, point.location.longitude], {
-            icon: createCustomIcon(),
+            icon: createCustomIcon(isActive),
           })
           .addTo(markersLayer.current!)
           .bindPopup(point.title);
@@ -74,9 +77,9 @@ function Map({ city, offers }: MapProps): JSX.Element {
 
       map.current.setView([city.latitude, city.longitude], city.zoom);
     }
-  }, [city, points]);
+  }, [city, points, activeOfferId]);
 
   return <section ref={mapRef} className="cities__map map" />;
-}
+};
 
 export default Map;
