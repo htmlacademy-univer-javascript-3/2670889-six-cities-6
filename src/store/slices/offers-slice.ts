@@ -34,9 +34,11 @@ const offersSlice = createSlice({
       state.activeOfferId = action.payload;
     },
     toggleFavorite: (state, action: PayloadAction<string>) => {
-      const offer = state.offers.find((offer) => offer.id === action.payload);
-      if (offer) {
-        offer.isFavorite = !offer.isFavorite;
+      const foundOffer = state.offers.find(
+        (item) => item.id === action.payload,
+      );
+      if (foundOffer) {
+        foundOffer.isFavorite = !foundOffer.isFavorite;
       }
     },
   },
