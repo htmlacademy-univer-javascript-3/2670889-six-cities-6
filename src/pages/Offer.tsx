@@ -6,7 +6,7 @@ import { HostInfo } from '../components/OfferPageItems/HostInfo';
 import { NearbyOffers } from '../components/OfferPageItems/NearbyOffers';
 import { OfferHeader } from '../components/OfferPageItems/OfferHeader';
 import { OfferInfo } from '../components/OfferPageItems/OfferInfo';
-import { ReviewsSection } from '../components/OfferPageItems/RewiesSection';
+import { ReviewsSection } from '../components/OfferPageItems/ReviewsSection';
 import { mockOffers } from '../mocks/offers';
 import { Offer } from '../types/offer';
 

@@ -11,12 +11,12 @@ type MapProps = {
 
 const createCustomIcon = () =>
   leaflet.icon({
-    iconUrl: `${import.meta.env.BASE_URL}/img/pin.svg`,
+    iconUrl: `${import.meta.env.BASE_URL}img/pin.svg`,
     iconSize: [27, 39],
     iconAnchor: [13.5, 39],
   });
 
-function Map({ city, offers }: MapProps): JSX.Element {
+const Map = ({ city, offers }: MapProps): JSX.Element => {
   const points = offers.map((offer: Offer) => ({
     id: offer.id,
     location: offer.location,
@@ -77,6 +77,6 @@ function Map({ city, offers }: MapProps): JSX.Element {
   }, [city, points]);
 
   return <section ref={mapRef} className="cities__map map" />;
-}
+};
 
 export default Map;
