@@ -1,73 +1,50 @@
-name: CodeSandbox Preview
+name: Create CodeSandbox Preview on PR
 
 on:
   pull_request:
-    branches: [ master ]
-    types: [opened, synchronize, reopened]
+    branches: [ master, main ]
 
 jobs:
-  deploy-to-codesandbox:
+  codesandbox-preview:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.fork == true
-    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v4
-      with:
-        ref: ${{ github.head_ref }}
-        token: ${{ secrets.GITHUB_TOKEN }}
-    
-    - name: Setup Node.js
-      uses: actions/setup-node@v4
-      with:
-        node-version: '18'
-        cache: 'npm'
-    
-    - name: Deploy to CodeSandbox
-      id: deploy
-      uses: codesandbox/deploy-action@v1
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        sandbox_name: "PR-${{ github.event.number }}-${{ github.head_ref }}"
-    
-    - name: Add CodeSandbox link to PR
-      uses: actions/github-script@v7
-      with:
-        script: |
-          const { data: comments } = await github.rest.issues.listComments({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: context.issue.number,
-          });
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Create CodeSandbox sandbox via API
+        id: create-sandbox
+        run: |
+          # Создаем временный архив с кодом
+          zip -r codesandbox-upload.zip . -x '*.git*' 'node_modules/*'
           
-          // Check if we already commented
-          const existingComment = comments.find(comment => 
-            comment.body.includes('CodeSandbox Preview') && 
-            comment.user.type === 'Bot'
-          );
+          # Отправляем в CodeSandbox API
+          RESPONSE=$(curl -s -X POST \
+            -H "Content-Type: application/json" \
+            -H "Accept: application/json" \
+            --data-binary @codesandbox-upload.zip \
+            "https://codesandbox.io/api/v1/sandboxes/define?json=1")
           
-          const commentBody = `## 🎯 CodeSandbox Preview
+          # Извлекаем ID сандбокса
+          SANDBOX_ID=$(echo $RESPONSE | grep -o '"sandbox_id":"[^"]*' | cut -d'"' -f4)
           
-            **Live Preview:** ${{ steps.deploy.outputs.sandbox_url }}
-                    
-            🔗 Эта ссылка будет автоматически обновляться при новых коммитах в PR.
-                    
-            _Создано автоматически_`;
-                    
-                    if (existingComment) {
-                        // Update existing comment
-                        await github.rest.issues.updateComment({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        comment_id: existingComment.id,
-                        body: commentBody
-                        });
-                    } else {
-                        // Create new comment
-                        await github.rest.issues.createComment({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        issue_number: context.issue.number,
-                        body: commentBody
-                        });
-                    }
+          if [ -n "$SANDBOX_ID" ]; then
+            CS_URL="https://codesandbox.io/s/$SANDBOX_ID"
+            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
+            echo "✅ Sandbox created: $CS_URL"
+          else
+            echo "❌ Failed to create sandbox"
+            echo "Response: $RESPONSE"
+            exit 1
+          fi
+
+      - name: Comment on PR
+        uses: actions/github-script@v7
+        if: success()
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `🎉 **CodeSandbox Preview Created!**\n\n🔗 [Open Preview](${{ steps.create-sandbox.outputs.CO DESANDBOX_URL }})\n\n_Ссылка активна и содержит актуальный код из этого PR_`
+            })
