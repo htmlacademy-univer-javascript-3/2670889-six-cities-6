@@ -37,89 +37,43 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create simplified package.json for CodeSandbox
+      - name: Generate GitHubbox URL
+        id: githubbox
         run: |
-          # Создаем упрощенный package.json для CodeSandbox
-          cat package.json | jq '
-            del(.scripts.chromatic) |
-            .scripts.start = "vite" |
-            .scripts.dev = "vite" |
-            .scripts.build = "vite build" |
-            .scripts.preview = "vite preview"
-          ' > package-codesandbox.json
-          mv package-codesandbox.json package.json
-
-      - name: Create CodeSandbox configuration
-        run: |
-          # Создаем папку если её нет
-          mkdir -p .codesandbox
-          cat > .codesandbox/template.json << 'EOF'
-          {
-            "title": "Six Cities",
-            "description": "React + TypeScript + Vite project",
-            "tags": ["react", "typescript", "vite"],
-            "published": true
-          }
-          EOF
-
-      - name: Create archive for CodeSandbox
-        run: |
-          zip -r codesandbox-upload.zip . \
-            -x "*.git*" "node_modules/*" ".github/*" "*.log" "dist/*" "build/*" "coverage/*" "*.env*" "*.md" "*.DS_Store"
-
-      - name: Upload to CodeSandbox
-        id: upload-sandbox
-        run: |
-          RESPONSE=$(curl -s -X POST \
-            "https://codesandbox.io/api/v1/sandboxes/define?json=1" \
-            -H "Content-Type: application/json" \
-            -H "Accept: application/json" \
-            --data-binary @codesandbox-upload.zip \
-            --max-time 60)
-          
-          echo "API Response: $RESPONSE"
-          
-          # Пробуем разные способы извлечения sandbox_id
-          SANDBOX_ID=$(echo "$RESPONSE" | grep -o '"sandbox_id":"[^"]*' | cut -d'"' -f4)
-          
-          if [ -z "$SANDBOX_ID" ]; then
-            SANDBOX_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*' | cut -d'"' -f4)
-          fi
-          
-          if [ -n "$SANDBOX_ID" ]; then
-            CS_URL="https://codesandbox.io/s/$SANDBOX_ID"
-            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
-            echo "CODESANDBOX_TYPE=sandbox" >> $GITHUB_OUTPUT
-          else
-            # Если не получилось создать sandbox, используем GitHubbox
-            CS_URL="https://githubbox.com/${{ github.repository }}/tree/${{ github.head_ref }}"
-            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
-            echo "CODESANDBOX_TYPE=githubbox" >> $GITHUB_OUTPUT
-          fi
-          
+          # Просто генерируем URL GitHubbox - он всегда работает
+          CS_URL="https://githubbox.com/${{ github.repository }}/tree/${{ github.head_ref }}"
+          echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
           echo "CodeSandbox URL: $CS_URL"
+
+      - name: Upload URL as artifact (для отладки)
+        uses: actions/upload-artifact@v4
+        with:
+          name: codesandbox-url
+          path: .
+          retention-days: 1
 
   comment-previews:
     runs-on: ubuntu-latest
     needs: [chromatic, codesandbox-preview]
-    if: always()
     steps:
-      - name: Check job statuses
-        id: check-status
+      - name: Debug outputs
         run: |
-          if [[ "${{ needs.chromatic.result }}" == "success" && "${{ needs.codesandbox-preview.result }}" == "success" ]]; then
-            echo "ALL_JOBS_SUCCESS=true" >> $GITHUB_OUTPUT
-          else
-            echo "ALL_JOBS_SUCCESS=false" >> $GITHUB_OUTPUT
-          fi
+          echo "=== Debug outputs ==="
+          echo "Chromatic result: ${{ needs.chromatic.result }}"
+          echo "CodeSandbox result: ${{ needs.codesandbox-preview.result }}"
+          echo "CodeSandbox URL from outputs: ${{ needs.codesandbox-preview.outputs.CODESANDBOX_URL }}"
 
       - name: Comment on PR
         uses: actions/github-script@v7
-        if: steps.check-status.outputs.ALL_JOBS_SUCCESS == 'true'
         with:
           script: |
-            const csUrl = '${{ needs.codesandbox-preview.outputs.CODESANDBOX_URL }}';
-            const csType = '${{ needs.codesandbox-preview.outputs.CODESANDBOX_TYPE }}';
+            // Получаем данные из контекста PR
+            const prNumber = context.issue.number;
+            const repo = context.repo;
+            const branch = context.payload.pull_request.head.ref;
+            
+            // Генерируем URL напрямую
+            const csUrl = `https://githubbox.com/${repo.owner}/${repo.repo}/tree/${branch}`;
             const chromaticBuildUrl = '${{ needs.chromatic.outputs.STORYBOOK_URL }}';
             const ghPagesUrl = 'https://aasemikov.github.io/2670889-six-cities-6/';
             
@@ -132,24 +86,24 @@ jobs:
             
             if (chromaticBuildUrl && chromaticBuildUrl.includes('chromatic.com')) {
               message += `   ↳ [Текущая сборка](${chromaticBuildUrl})\n`;
+            } else {
+              message += `   ↳ Сборка обрабатывается...\n`;
             }
             
-            // CodeSandbox
-            if (csType === 'sandbox') {
-              message += `📦 [CodeSandbox](${csUrl}) - готовый sandbox\n`;
-            } else {
-              message += `📦 [CodeSandbox](${csUrl}) - через GitHubbox\n`;
-            }
+            // CodeSandbox - всегда используем GitHubbox
+            message += `📦 [CodeSandbox](${csUrl}) - запуск в браузере\n`;
             
             // GitHub Pages
             message += `🚀 [GitHub Pages](${ghPagesUrl}) - деплой приложения\n\n`;
             
             message += '---\n';
-            message += '_Previews обновляются автоматически при каждом пуше_';
+            message += '_Previews обновляются автоматически_';
+            
+            console.log('Comment message:', message);
             
             github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
+              issue_number: prNumber,
+              owner: repo.owner,
+              repo: repo.repo,
               body: message
             });
