@@ -51,7 +51,9 @@ jobs:
 
       - name: Create CodeSandbox configuration
         run: |
-          cat > .codesandbox/template.json << EOF
+          # Создаем папку если её нет
+          mkdir -p .codesandbox
+          cat > .codesandbox/template.json << 'EOF'
           {
             "title": "Six Cities",
             "description": "React + TypeScript + Vite project",
@@ -84,15 +86,15 @@ jobs:
             SANDBOX_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*' | cut -d'"' -f4)
           fi
           
-          if [ -z "$SANDBOX_ID" ]; then
-            # Если не получилось создать sandbox, используем альтернативную ссылку
-            CS_URL="https://githubbox.com/${{ github.repository }}/tree/${{ github.head_ref }}"
-            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
-            echo "CODESANDBOX_TYPE=githubbox" >> $GITHUB_OUTPUT
-          else
+          if [ -n "$SANDBOX_ID" ]; then
             CS_URL="https://codesandbox.io/s/$SANDBOX_ID"
             echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
             echo "CODESANDBOX_TYPE=sandbox" >> $GITHUB_OUTPUT
+          else
+            # Если не получилось создать sandbox, используем GitHubbox
+            CS_URL="https://githubbox.com/${{ github.repository }}/tree/${{ github.head_ref }}"
+            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
+            echo "CODESANDBOX_TYPE=githubbox" >> $GITHUB_OUTPUT
           fi
           
           echo "CodeSandbox URL: $CS_URL"
@@ -132,15 +134,11 @@ jobs:
               message += `   ↳ [Текущая сборка](${chromaticBuildUrl})\n`;
             }
             
-            // CodeSandbox - используем публичные ссылки
+            // CodeSandbox
             if (csType === 'sandbox') {
-              message += `📦 [CodeSandbox](${csUrl}) - готовый sandbox (публичный)\n`;
-            } else if (csType === 'githubbox') {
-              message += `📦 [CodeSandbox](${csUrl}) - через GitHubbox (публичный)\n`;
+              message += `📦 [CodeSandbox](${csUrl}) - готовый sandbox\n`;
             } else {
-              // Fallback - прямая ссылка на GitHub в CodeSandbox
-              const fallbackUrl = `https://githubbox.com/${context.repo.owner}/${context.repo.repo}/tree/${context.payload.pull_request.head.ref}`;
-              message += `📦 [CodeSandbox](${fallbackUrl}) - импорт из GitHub (публичный)\n`;
+              message += `📦 [CodeSandbox](${csUrl}) - через GitHubbox\n`;
             }
             
             // GitHub Pages
