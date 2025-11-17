@@ -51,15 +51,15 @@ jobs:
             const csUrl = '${{ steps.upload-sandbox.outputs.CODESANDBOX_URL }}';
             const ghPagesUrl = 'https://aasemikov.github.io/2670889-six-cities-6/';
             
-            let message = '🌐 **Live Previews:**\\n\\n';
+            let message = '🌐 **Live Previews:**\n\n';
             
             if (csUrl.includes('/s/')) {
-              message += `📦 [CodeSandbox](${csUrl}) - готовый sandbox\\n`;
+              message += `📦 [CodeSandbox](${csUrl}) - готовый sandbox\n`;
             } else {
-              message += `📦 [CodeSandbox](${csUrl}) - импорт и запуск\\n`;
+              message += `📦 [CodeSandbox](${csUrl}) - импорт и запуск\n`;
             }
             
-            message += `🚀 [GitHub Pages](${ghPagesUrl}) - деплой приложения\\n\\n`;
+            message += `🚀 [GitHub Pages](${ghPagesUrl}) - деплой приложения\n\n`;
             message += '_Previews обновляются автоматически_';
             
             github.rest.issues.createComment({
