@@ -2,13 +2,13 @@ name: CodeSandbox Preview
 
 on:
   pull_request:
-    branches: [ master, main ]
+    branches: [ master ]
     types: [opened, synchronize, reopened]
 
 jobs:
   deploy-to-codesandbox:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.head.repo.fork == false
+    if: github.event.pull_request.head.repo.fork == true
     
     steps:
     - name: Checkout code
