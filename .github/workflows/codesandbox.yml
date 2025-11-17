@@ -34,94 +34,32 @@ jobs:
   codesandbox-preview:
     runs-on: ubuntu-latest
     outputs:
-      CODESANDBOX_URL: ${{ steps.deploy-sandbox.outputs.codesandbox-url }}
+      CODESANDBOX_URL: ${{ steps.deploy-codesandbox.outputs.sandbox-url }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '18'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Install CodeSandbox CLI
-        run: npm install -g @codesandbox/sandpack-cli
-
-      - name: Create sandbox configuration (if missing)
-        run: |
-          # Создаем минимальную конфигурацию для CodeSandbox если её нет
-          if [ ! -f sandbox.config.json ]; then
-            cat > sandbox.config.json << EOF
-          {
-            "infiniteLoopProtection": true,
-            "hardReloadOnChange": false,
-            "view": "browser",
-            "template": "node",
-            "container": {
-              "node": "16"
-            }
-          }
-          EOF
-          fi
-
       - name: Deploy to CodeSandbox
-        id: deploy-sandbox
-        env:
-          CODESANDBOX_TOKEN: ${{ secrets.CODESANDBOX_TOKEN }}
-        run: |
-          echo "Deploying to CodeSandbox..."
-          
-          # Деплоим с помощью CLI
-          DEPLOY_RESULT=$(npx @codesandbox/sandpack-cli deploy . --token $CODESANDBOX_TOKEN --name "PR-${{ github.head_ref }}-${{ github.run_id }}" --public --output json)
-          
-          echo "Deploy result: $DEPLOY_RESULT"
-          
-          # Парсим JSON вывод чтобы получить URL
-          CSB_URL=$(echo $DEPLOY_RESULT | python3 -c "import sys, json; print(json.load(sys.stdin)['url'])")
-          
-          # Альтернатива если python не установлен (используем jq)
-          # CSB_URL=$(echo $DEPLOY_RESULT | jq -r '.url')
-          
-          echo "CodeSandbox URL: $CSB_URL"
-          echo "codesandbox-url=$CSB_URL" >> $GITHUB_OUTPUT
+        id: deploy-codesandbox
+        uses: bervProject/deploy-to-codesandbox@v1.0.6
+        with:
+          codesandbox-token: ${{ secrets.CODESANDBOX_TOKEN }}
+          sandbox-name: "PR-${{ github.head_ref }}-${{ github.run_number }}"
+          is-public: true
+          # Дополнительные опции:
+          # sandbox-alias: "pr-${{ github.head_ref }}"
+          # branch: ${{ github.head_ref }}
 
-      - name: Fallback deployment (if CLI fails)
-        if: steps.deploy-sandbox.outcome == 'failure'
-        id: fallback-deploy
-        env:
-          CODESANDBOX_TOKEN: ${{ secrets.CODESANDBOX_TOKEN }}
+      - name: Show CodeSandbox URL
         run: |
-          echo "Trying alternative deployment method..."
-          
-          # Альтернативный способ через zip архивирование
-          zip -r deploy.zip . -x "*.git*" "node_modules/*" "*.github/*"
-          
-          # Используем curl для загрузки на CodeSandbox
-          RESPONSE=$(curl -X POST \
-            -H "Content-Type: application/json" \
-            -H "Authorization: Bearer $CODESANDBOX_TOKEN" \
-            -d '{
-              "name": "PR-'${{ github.head_ref }}'-'${{ github.run_id }}'",
-              "is_public": true
-            }' \
-            "https://codesandbox.io/api/v1/sandboxes/define?json=1")
-          
-          SANDBOX_ID=$(echo $RESPONSE | python3 -c "import sys, json; print(json.load(sys.stdin)['sandbox_id'])")
-          CSB_URL="https://$SANDBOX_ID.sse.codesandbox.io"
-          
-          echo "Alternative CodeSandbox URL: $CSB_URL"
-          echo "codesandbox-url=$CSB_URL" >> $GITHUB_OUTPUT
+          echo "CodeSandbox URL: ${{ steps.deploy-codesandbox.outputs.sandbox-url }}"
 
   comment-previews:
     runs-on: ubuntu-latest
     needs: [chromatic, codesandbox-preview]
     if: always()
     steps:
-      - name: Create or update PR comment
+      - name: Create PR comment with previews
         uses: actions/github-script@v7
         with:
           script: |
@@ -129,11 +67,11 @@ jobs:
             const repo = context.repo;
             const branch = context.payload.pull_request.head.ref;
             
-            // Получаем URL из предыдущих jobs
             const chromaticUrl = '${{ needs.chromatic.outputs.STORYBOOK_URL }}';
             const codesandboxUrl = '${{ needs.codesandbox-preview.outputs.CODESANDBOX_URL }}';
             const ghPagesUrl = 'https://aasemikov.github.io/2670889-six-cities-6/';
             const chromaticProjectUrl = 'https://www.chromatic.com/build?appId=691b0d625e34626933fd4919';
+            const githubboxUrl = `https://githubbox.com/${repo.owner}/${repo.repo}/tree/${branch}`;
             
             let message = '🌐 **Live Previews:**\n\n';
             
@@ -149,19 +87,16 @@ jobs:
             if (codesandboxUrl && codesandboxUrl.includes('codesandbox.io')) {
               message += `• [Open in CodeSandbox](${codesandboxUrl}) - полная песочница\n`;
             }
-            
-            // GitHubbox (всегда доступен)
-            const githubboxUrl = `https://githubbox.com/${repo.owner}/${repo.repo}/tree/${branch}`;
-            message += `• [Quick GitHubbox](${githubboxUrl}) - быстрый просмотр\n`;
+            message += `• [GitHubbox](${githubboxUrl}) - быстрый просмотр\n`;
             
             // GitHub Pages
             message += `\n🚀 **Production Build**\n`;
             message += `• [GitHub Pages](${ghPagesUrl}) - финальная версия\n`;
             
             message += '\n---\n';
-            message += '_Previews обновляются автоматически при каждом пуше в PR_';
+            message += '_Previews обновляются автоматически_';
             
-            // Ищем существующий комментарий с previews
+            // Создаем или обновляем комментарий
             const { data: comments } = await github.rest.issues.listComments({
               owner: repo.owner,
               repo: repo.repo,
@@ -169,26 +104,21 @@ jobs:
             });
             
             const existingComment = comments.find(comment => 
-              comment.body.includes('🌐 **Live Previews:**') && 
-              comment.user.type === 'Bot'
+              comment.body.includes('🌐 **Live Previews:**')
             );
             
             if (existingComment) {
-              // Обновляем существующий комментарий
               await github.rest.issues.updateComment({
                 owner: repo.owner,
                 repo: repo.repo,
                 comment_id: existingComment.id,
                 body: message
               });
-              console.log('Updated existing comment');
             } else {
-              // Создаем новый комментарий
               await github.rest.issues.createComment({
                 owner: repo.owner,
                 repo: repo.repo,
                 issue_number: prNumber,
                 body: message
               });
-              console.log('Created new comment');
             }
