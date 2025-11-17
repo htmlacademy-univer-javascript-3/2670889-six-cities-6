@@ -46,5 +46,5 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🎉 **CodeSandbox Preview Created!**\n\n🔗 [Open Preview](${{ steps.create-sandbox.outputs.CO DESANDBOX_URL }})\n\n_Ссылка активна и содержит актуальный код из этого PR_`
+              body: `🎉 **CodeSandbox Preview Created!**\n\n🔗 [Open Preview](${{ steps.create-sandbox.outputs.CODESANDBOX_URL }})\n\n_Ссылка активна и содержит актуальный код из этого PR_`
             })
