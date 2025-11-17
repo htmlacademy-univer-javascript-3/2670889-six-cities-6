@@ -72,9 +72,24 @@ jobs:
   comment-previews:
     runs-on: ubuntu-latest
     needs: [chromatic, codesandbox-preview]
+    if: always()
     steps:
+      - name: Check job statuses
+        id: check-status
+        run: |
+          # Проверяем статусы всех зависимых jobs
+          if [[ "${{ needs.chromatic.result }}" == "success" && "${{ needs.codesandbox-preview.result }}" == "success" ]]; then
+            echo "ALL_JOBS_SUCCESS=true" >> $GITHUB_OUTPUT
+          else
+            echo "ALL_JOBS_SUCCESS=false" >> $GITHUB_OUTPUT
+            echo "Some jobs failed:"
+            echo "Chromatic: ${{ needs.chromatic.result }}"
+            echo "CodeSandbox: ${{ needs.codesandbox-preview.result }}"
+          fi
+
       - name: Comment on PR
         uses: actions/github-script@v7
+        if: steps.check-status.outputs.ALL_JOBS_SUCCESS == 'true'
         with:
           script: |
             const csUrl = '${{ steps.upload-sandbox.outputs.CODESANDBOX_URL }}';
