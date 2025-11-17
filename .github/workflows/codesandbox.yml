@@ -11,21 +11,54 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Create CodeSandbox sandbox via API
+      - name: Verify project structure
+        run: |
+          echo "📁 Checking project files..."
+          ls -la
+          echo "---"
+          if [ -f "package.json" ]; then
+            echo "✅ package.json found"
+          else
+            echo "❌ package.json not found - this may cause the error"
+            exit 1
+          fi
+
+      - name: Create optimized archive for CodeSandbox
         id: create-sandbox
         run: |
-          # Создаем временный архив с кодом
-          zip -r codesandbox-upload.zip . -x '*.git*' 'node_modules/*'
-          
-          # Отправляем в CodeSandbox API
+          # Создаем архив только с необходимыми файлами
+          zip -r codesandbox-upload.zip . \
+            -x "*.git*" \
+            -x "node_modules/*" \
+            -x ".github/*" \
+            -x "*.log" \
+            -x "dist/*" \
+            -x "build/*" \
+            -x "coverage/*" \
+            -x "*.env*" \
+            -x "*.md"
+
+          echo "📦 Archive size: $(du -h codesandbox-upload.zip | cut -f1)"
+
+      - name: Upload to CodeSandbox API
+        id: upload-sandbox
+        run: |
+          # Используем правильный endpoint для создания sandbox
           RESPONSE=$(curl -s -X POST \
+            "https://codesandbox.io/api/v1/sandboxes/define" \
             -H "Content-Type: application/json" \
             -H "Accept: application/json" \
-            --data-binary @codesandbox-upload.zip \
-            "https://codesandbox.io/api/v1/sandboxes/define?json=1")
+            --data @codesandbox-upload.zip \
+            --max-time 30)
           
-          # Извлекаем ID сандбокса
-          SANDBOX_ID=$(echo $RESPONSE | grep -o '"sandbox_id":"[^"]*' | cut -d'"' -f4)
+          echo "API Response: $RESPONSE"
+          
+          # Пробуем разные способы извлечения sandbox_id
+          SANDBOX_ID=$(echo "$RESPONSE" | grep -o '"sandbox_id":"[^"]*' | cut -d'"' -f4)
+          
+          if [ -z "$SANDBOX_ID" ]; then
+            SANDBOX_ID=$(echo "$RESPONSE" | grep -o '"id":"[^"]*' | cut -d'"' -f4)
+          fi
           
           if [ -n "$SANDBOX_ID" ]; then
             CS_URL="https://codesandbox.io/s/$SANDBOX_ID"
@@ -33,8 +66,12 @@ jobs:
             echo "✅ Sandbox created: $CS_URL"
           else
             echo "❌ Failed to create sandbox"
-            echo "Response: $RESPONSE"
-            exit 1
+            echo "Trying alternative method..."
+            
+            # Альтернативный способ - используем GitHub импорт
+            CS_URL="https://codesandbox.io/p/github/${{ github.repository }}/${{ github.head_ref }}"
+            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
+            echo "🔗 Fallback URL: $CS_URL"
           fi
 
       - name: Comment on PR
@@ -42,9 +79,21 @@ jobs:
         if: success()
         with:
           script: |
+            const csUrl = '${{ steps.upload-sandbox.outputs.CODESANDBOX_URL }}';
+            
+            let message = '🚀 **CodeSandbox Preview**\\n\\n';
+            
+            if (csUrl.includes('/s/')) {
+              message += `📦 [Открыть готовый Sandbox](${csUrl})\\n\\n`;
+              message += '_Сандбокс создан автоматически и готов к работе_';
+            } else {
+              message += `🔗 [Импортировать в CodeSandbox](${csUrl})\\n\\n`;
+              message += '_Нажмите "Import and Fork" для создания sandbox_';
+            }
+            
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: `🎉 **CodeSandbox Preview Created!**\n\n🔗 [Open Preview](${{ steps.create-sandbox.outputs.CODESANDBOX_URL }})\n\n_Ссылка активна и содержит актуальный код из этого PR_`
-            })
+              body: message
+            });
