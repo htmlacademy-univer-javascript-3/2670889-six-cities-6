@@ -1,3 +1,4 @@
+import { City } from './city';
 import { Location } from './map';
 import { Review } from './review';
 
@@ -6,7 +7,7 @@ export type Offer = {
   title: string;
   type: 'apartment' | 'room' | 'house' | 'hotel' | 'studio';
   price: number;
-  city: string;
+  city: City;
   location: Location;
   isFavorite: boolean;
   isPremium: boolean;
