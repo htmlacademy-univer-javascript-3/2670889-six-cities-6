@@ -7,7 +7,7 @@ export type Offer = {
   title: string;
   type: 'apartment' | 'room' | 'house' | 'hotel' | 'studio';
   price: number;
-  city: City;
+  city: string;
   location: Location;
   isFavorite: boolean;
   isPremium: boolean;

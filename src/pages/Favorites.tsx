@@ -10,10 +10,10 @@ type FavoritesPageProps = {
 export const FavoritesPage: React.FC<FavoritesPageProps> = ({ favorites }) => {
   const groupedFavorites = favorites.reduce<{ [city: string]: Offer[] }>(
     (acc, offer) => {
-      if (!acc[offer.city.name]) {
-        acc[offer.city.name] = [];
+      if (!acc[offer.city]) {
+        acc[offer.city] = [];
       }
-      acc[offer.city.name].push(offer);
+      acc[offer.city].push(offer);
       return acc;
     },
     {},

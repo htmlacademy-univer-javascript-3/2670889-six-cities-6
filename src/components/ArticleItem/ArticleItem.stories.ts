@@ -7,16 +7,7 @@ const mockOffer: Offer = {
   title: 'Beautiful & luxurious apartment at great location',
   type: 'apartment',
   price: 120,
-  city: {
-    id: 1,
-    name: 'Amsterdam',
-    href: '/amsterdam',
-    location: {
-      latitude: 52.37454,
-      longitude: 4.897976,
-      zoom: 13
-    }
-  },
+  city: 'Amsterdam',
   location: {
     latitude: 52.3909553943508,
     longitude: 4.85309666406198,
