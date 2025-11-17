@@ -42,14 +42,10 @@ jobs:
           script: |
             const prNumber = context.issue.number;
             const repo = context.repo;
-            const branch = context.payload.pull_request.head.ref;
             
             const chromaticUrl = '${{ needs.chromatic.outputs.STORYBOOK_URL }}';
             const ghPagesUrl = 'https://aasemikov.github.io/2670889-six-cities-6/';
             const chromaticProjectUrl = 'https://www.chromatic.com/build?appId=691b0d625e34626933fd4919';
-            
-            // Генерируем прямую ссылку на CodeSandbox preview
-            const codesandboxUrl = `https://codesandbox.io/p/github/${repo.owner}/${repo.repo}/${branch}`;
             
             let message = '🌐 **Live Previews:**\n\n';
             
@@ -59,10 +55,6 @@ jobs:
               message += `• [View Storybook](${chromaticUrl}) - компоненты и UI-тесты\n`;
             }
             message += `• [Chromatic Project](${chromaticProjectUrl}) - все сборки\n`;
-            
-            // CodeSandbox
-            message += `\n📦 **Interactive Sandbox**\n`;
-            message += `• [CodeSandbox Preview](${codesandboxUrl}) - запуск в браузере\n`;
             
             // GitHub Pages
             message += `\n🚀 **Production Build**\n`;
