@@ -62,7 +62,8 @@ jobs:
             
             // CodeSandbox
             message += `\n📦 **Interactive Sandbox**\n`;
-            message += `• [CodeSandbox Preview](${codesandboxUrl}) - запуск в браузере\n`;
+            message += `• [CodeSandbox Preview](${codesandboxUrl}) - запуск в браузере ветки master\n`;
+            message += `Ссылка на эту ветку в CodeSandbox в комментарии выше (нужная ссылка Web Editor)`
             
             // GitHub Pages
             message += `\n🚀 **Production Build**\n`;
