@@ -1,4 +1,3 @@
-import { City } from './city';
 import { Location } from './map';
 import { Review } from './review';
 

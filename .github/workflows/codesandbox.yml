@@ -65,9 +65,18 @@ jobs:
             CS_URL="https://codesandbox.io/s/$SANDBOX_ID"
             echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
           else
-            CS_URL="https://codesandbox.io/p/github/${{ github.repository }}/${{ github.head_ref }}"
+            CS_URL="https://codesandbox.io/p/github/${{ github.repository }}/tree/${{ github.head_ref }}"
             echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
           fi
+
+      - name: Upload CodeSandbox URL as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: codesandbox-url
+          path: |
+            !node_modules/
+            !.git/
+          retention-days: 1
 
   comment-previews:
     runs-on: ubuntu-latest
@@ -87,13 +96,28 @@ jobs:
             echo "CodeSandbox: ${{ needs.codesandbox-preview.result }}"
           fi
 
+      - name: Get CodeSandbox URL from previous job
+        id: get-cs-url
+        run: |
+          # Получаем URL из outputs предыдущего job
+          CS_URL="${{ needs.codesandbox-preview.outputs.CODESANDBOX_URL }}"
+          if [ -n "$CS_URL" ]; then
+            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
+            echo "Found CodeSandbox URL: $CS_URL"
+          else
+            # Fallback URL если outputs не работает
+            CS_URL="https://codesandbox.io/p/github/${{ github.repository }}/tree/${{ github.head_ref }}"
+            echo "CODESANDBOX_URL=$CS_URL" >> $GITHUB_OUTPUT
+            echo "Using fallback CodeSandbox URL: $CS_URL"
+          fi
+
       - name: Comment on PR
         uses: actions/github-script@v7
         if: steps.check-status.outputs.ALL_JOBS_SUCCESS == 'true'
         with:
           script: |
-            const csUrl = '${{ steps.upload-sandbox.outputs.CODESANDBOX_URL }}';
-            const chromaticBuildUrl = '${{ steps.chromatic.outputs.STORYBOOK_URL }}';
+            const csUrl = '${{ steps.get-cs-url.outputs.CODESANDBOX_URL }}';
+            const chromaticBuildUrl = '${{ needs.chromatic.outputs.STORYBOOK_URL }}';
             const ghPagesUrl = 'https://aasemikov.github.io/2670889-six-cities-6/';
             
             // Статичная ссылка на ваш Chromatic проект
@@ -101,7 +125,7 @@ jobs:
             
             let message = '🌐 **Live Previews:**\n\n';
             
-            // Chromatic Storybook - используем статичную ссылку на проект
+            // Chromatic Storybook
             message += `🎨 [Storybook on Chromatic](${chromaticProjectUrl}) - компоненты и UI-тесты\n`;
             
             // Если есть конкретная сборка, добавляем и её
@@ -109,11 +133,15 @@ jobs:
               message += `   ↳ [Текущая сборка](${chromaticBuildUrl})\n`;
             }
             
-            // CodeSandbox
-            if (csUrl.includes('/s/')) {
-              message += `📦 [CodeSandbox](${csUrl}) - готовый sandbox\n`;
+            // CodeSandbox - проверяем что URL валидный
+            if (csUrl && csUrl.includes('codesandbox.io')) {
+              if (csUrl.includes('/s/')) {
+                message += `📦 [CodeSandbox](${csUrl}) - готовый sandbox\n`;
+              } else {
+                message += `📦 [CodeSandbox](${csUrl}) - импорт и запуск\n`;
+              }
             } else {
-              message += `📦 [CodeSandbox](${csUrl}) - импорт и запуск\n`;
+              message += `📦 [CodeSandbox](https://codesandbox.io/p/github/${{ github.repository }}/tree/${{ github.head_ref }}) - импорт и запуск\n`;
             }
             
             // GitHub Pages
