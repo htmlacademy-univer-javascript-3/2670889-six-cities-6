@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react'; // Добавляем useCallback
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { ArticleList } from '../components/ArticleList';
 import Map from '../components/Map';
 import { Sorting } from '../components/Sorting';
@@ -29,7 +29,6 @@ const Main: React.FC = () => {
     dispatch(fetchOffers());
   }, [dispatch]);
 
-  // Создаем обработчик для повторной загрузки с useCallback
   const handleRetry = useCallback(() => {
     dispatch(fetchOffers());
   }, [dispatch]);
@@ -90,7 +89,6 @@ const Main: React.FC = () => {
           <div className="error-message">
             <h2>Не удалось загрузить предложения</h2>
             <p>{error}</p>
-            {/* Используем handleRetry вместо inline функции */}
             <button
               onClick={handleRetry}
               className="error-message__retry"
