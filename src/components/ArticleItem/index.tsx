@@ -82,7 +82,7 @@ export const ArticleItem: React.FC<OfferCardProps> = ({
           </div>
           <button
             className={`place-card__bookmark-button button ${isFavorite ? 'place-card__bookmark-button--active' : ''
-              }`}
+            }`}
             type="button"
             onClick={handleFavoriteClick}
           >

@@ -17,12 +17,9 @@ export const LoginPage: React.FC = () => {
     dispatch(clearError());
   }, [dispatch]);
 
-  const handleSubmit = async (e: FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
-    try {
-      await dispatch(login({ email, password })).unwrap();
-    } catch {
-    }
+    dispatch(login({ email, password }));
   };
 
   if (authorizationStatus === 'AUTH') {

@@ -3,9 +3,9 @@ import { AxiosInstance } from 'axios';
 import { Offer } from '../../types/offer';
 
 interface FavoritesState {
-    favorites: Offer[];
-    loading: boolean;
-    error: string | null;
+  favorites: Offer[];
+  loading: boolean;
+  error: string | null;
 }
 
 const initialState: FavoritesState = {
@@ -15,18 +15,18 @@ const initialState: FavoritesState = {
 };
 
 export const fetchFavorites = createAsyncThunk<
-    Offer[],
-    void,
-    { extra: AxiosInstance }
+  Offer[],
+  void,
+  { extra: AxiosInstance }
 >('favorites/fetchFavorites', async (_, { extra: api }) => {
   const { data } = await api.get<Offer[]>('/favorite');
   return data;
 });
 
 export const toggleFavorite = createAsyncThunk<
-    Offer,
-    { offerId: string; status: boolean },
-    { extra: AxiosInstance }
+  Offer,
+  { offerId: string; status: boolean },
+  { extra: AxiosInstance }
 >('favorites/toggleFavorite', async ({ offerId, status }, { extra: api }) => {
   const { data } = await api.post<Offer>(`/favorite/${offerId}/${status ? 1 : 0}`);
   return data;
@@ -42,8 +42,7 @@ const favoritesSlice = createSlice({
     updateFavoriteLocal: (state, action: PayloadAction<{ offerId: string; isFavorite: boolean }>) => {
       const { offerId, isFavorite } = action.payload;
 
-      if (isFavorite) {
-      } else {
+      if (!isFavorite) {
         state.favorites = state.favorites.filter((offer) => offer.id !== offerId);
       }
     },

@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 
 export const createAPI = () => {
   const api = axios.create({
@@ -16,7 +16,7 @@ export const createAPI = () => {
 
   api.interceptors.response.use(
     (response) => response,
-    (error) => {
+    (error: AxiosError) => {
       if (error.response?.status === 401) {
         localStorage.removeItem('six-cities-token');
       }

@@ -20,13 +20,9 @@ export const NavBar: React.FC<NavBarProps> = ({ isAuthorized }) => {
     }
   }, [isAuthorized, dispatch]);
 
-  const handleLogout = useCallback(async (e: React.MouseEvent) => {
+  const handleLogout = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
-    try {
-      await dispatch(logout()).unwrap();
-    } catch (error) {
-      console.error('Logout failed:', error);
-    }
+    dispatch(logout());
   }, [dispatch]);
 
   if (!isAuthorized) {
