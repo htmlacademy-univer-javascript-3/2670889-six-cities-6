@@ -1,31 +1,52 @@
 import { Location } from './map';
-import { Review } from './review';
 
-export type Offer = {
+export type City = {
+  name: string;
+  location: Location;
+};
+
+export type OfferType = 'apartment' | 'room' | 'house' | 'hotel' | 'studio';
+
+export type Host = {
+  name: string;
+  avatarUrl: string;
+  isPro: boolean;
+};
+
+export type DetailedOffer = {
   id: string;
   title: string;
-  type: 'apartment' | 'room' | 'house' | 'hotel' | 'studio';
+  type: OfferType;
   price: number;
-  city: string;
+  city: City;
+  location: Location;
+  isFavorite: boolean;
+  isPremium: boolean;
+  rating: number;
+  description: string;
+  bedrooms: number;
+  goods: string[];
+  host: Host;
+  images: string[];
+  maxAdults: number;
+  previewImage?: string;
+};
+
+export type ShortOffer = {
+  id: string;
+  title: string;
+  type: OfferType;
+  price: number;
+  city: City;
   location: Location;
   isFavorite: boolean;
   isPremium: boolean;
   rating: number;
   previewImage: string;
-  bedrooms: number;
-  maxAdults: number;
-  amenities: string[];
-  images: string[];
-  views: number;
-  host: {
-    name: string;
-    avatar: string;
-    isPro: boolean;
-  };
-  description: string;
-  reviews: Review[];
 };
 
-export type OffersListProps = {
-  offers: Offer[];
-};
+export type Offer = ShortOffer | DetailedOffer;
+
+export const isDetailedOffer = (offer: Offer): offer is DetailedOffer => 'description' in offer && 'goods' in offer;
+
+export type Offers = Offer[];

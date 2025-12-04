@@ -1,7 +1,8 @@
-import { OffersListProps } from '../../types/offer';
+import { Offers } from '../../types/offer';
 import { ArticleItem } from '../ArticleItem';
 
-type ArticleListProps = OffersListProps & {
+type ArticleListProps = {
+  offers: Offers;
   onCardHover?: (offerId: string | null) => void;
 };
 
