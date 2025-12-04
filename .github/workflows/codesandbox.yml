@@ -1,0 +1,100 @@
+name: Create Previews on PR
+
+on:
+  pull_request:
+    branches: [master]
+
+jobs:
+  chromatic:
+    name: Publish to Chromatic
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Publish to Chromatic
+        id: chromatic
+        uses: chromaui/action@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          exitOnceUploaded: true
+
+  comment-previews:
+    runs-on: ubuntu-latest
+    needs: [chromatic]
+    if: always()
+    steps:
+      - name: Create PR comment with previews
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const prNumber = context.issue.number;
+            const repo = context.repo;
+            const branch = context.payload.pull_request.head.ref;
+            
+            const chromaticUrl = '${{ needs.chromatic.outputs.STORYBOOK_URL }}';
+            const ghPagesUrl = 'https://aasemikov.github.io/2670889-six-cities-6/';
+            const chromaticProjectUrl = 'https://www.chromatic.com/build?appId=691b0d625e34626933fd4919';
+            
+            // Генерируем прямую ссылку на CodeSandbox preview
+            const codesandboxUrl = `https://codesandbox.io/p/github/${repo.owner}/${repo.repo}/${branch}`;
+            
+            let message = '🌐 **Live Previews:**\n\n';
+            
+            // Chromatic Storybook
+            message += `🎨 **Storybook Components**\n`;
+            if (chromaticUrl && chromaticUrl.includes('chromatic.com')) {
+              message += `• [View Storybook](${chromaticUrl}) - компоненты и UI-тесты\n`;
+            }
+            message += `• [Chromatic Project](${chromaticProjectUrl}) - все сборки\n`;
+            
+            // CodeSandbox
+            message += `\n📦 **Interactive Sandbox**\n`;
+            message += `• [CodeSandbox Preview](${codesandboxUrl}) - запуск в браузере ветки master\n`;
+            message += `Ссылка на эту ветку в CodeSandbox в комментарии выше (нужная ссылка Web Editor)`
+            
+            // GitHub Pages
+            message += `\n🚀 **Production Build**\n`;
+            message += `• [GitHub Pages](${ghPagesUrl}) - финальная версия\n`;
+            
+            message += '\n---\n';
+            message += '_Previews обновляются автоматически_';
+            
+            // Создаем или обновляем комментарий
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: repo.owner,
+              repo: repo.repo,
+              issue_number: prNumber
+            });
+            
+            const existingComment = comments.find(comment => 
+              comment.body.includes('🌐 **Live Previews:**')
+            );
+            
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                comment_id: existingComment.id,
+                body: message
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: repo.owner,
+                repo: repo.repo,
+                issue_number: prNumber,
+                body: message
+              });
+            }
