@@ -1,10 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { ArticleList } from '../components/ArticleList';
 import Map from '../components/Map';
 import { Sorting } from '../components/Sorting';
+import Spinner from '../components/Spinner';
 import { Tabs } from '../components/Tabs';
 import { useAppDispatch, useAppSelector } from '../store/hooks/redux';
 import {
+  fetchOffers,
   setActiveOfferId,
   setSelectedCity,
   setSelectedSort,
@@ -13,11 +15,26 @@ import {
 const Main: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { offers, cities, selectedCity, selectedSort, activeOfferId } =
-    useAppSelector((state) => state.offers);
+  const {
+    offers,
+    cities,
+    selectedCity,
+    selectedSort,
+    activeOfferId,
+    loading,
+    error
+  } = useAppSelector((state) => state.offers);
+
+  useEffect(() => {
+    dispatch(fetchOffers());
+  }, [dispatch]);
+
+  const handleRetry = useCallback(() => {
+    dispatch(fetchOffers());
+  }, [dispatch]);
 
   const filteredOffers = useMemo(
-    () => offers.filter((offer) => offer.city === selectedCity.name),
+    () => offers.filter((offer) => offer.city.name === selectedCity.name),
     [offers, selectedCity],
   );
 
@@ -35,7 +52,8 @@ const Main: React.FC = () => {
         return offersToSort.sort((a, b) => b.rating - a.rating);
 
       case 'popular':
-        return offersToSort.sort((a, b) => b.views - a.views);
+        return offersToSort;
+
       default:
         return offersToSort;
     }
@@ -53,6 +71,62 @@ const Main: React.FC = () => {
   const handleCardHover = (offerId: string | null) => {
     dispatch(setActiveOfferId(offerId));
   };
+
+  if (loading) {
+    return (
+      <main className="page__main page__main--index">
+        <div className="cities">
+          <Spinner />
+        </div>
+      </main>
+    );
+  }
+
+  if (error) {
+    return (
+      <main className="page__main page__main--index">
+        <div className="cities">
+          <div className="error-message">
+            <h2>Не удалось загрузить предложения</h2>
+            <p>{error}</p>
+            <button
+              onClick={handleRetry}
+              className="error-message__retry"
+            >
+              Попробовать снова
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (filteredOffers.length === 0) {
+    return (
+      <main className="page__main page__main--index">
+        <div className="cities">
+          <div className="cities__places-container cities__places-container--empty container">
+            <section className="cities__no-places">
+              <div className="cities__status-wrapper">
+                <b className="cities__status">No places to stay available</b>
+                <p className="cities__status-description">
+                  We could not find any property available at the moment in{' '}
+                  {selectedCity.name}
+                </p>
+              </div>
+            </section>
+            <div className="cities__right-section">
+              <Map
+                city={selectedCity.location}
+                offers={[]}
+                activeOfferId={null}
+              />
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main className="page__main page__main--index">

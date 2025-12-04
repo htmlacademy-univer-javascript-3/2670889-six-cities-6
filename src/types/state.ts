@@ -1,5 +1,4 @@
-import { Offer } from './offer';
-import { City } from './city';
+import { City, Offer } from './offer';
 
 export interface State {
   currentCity: City;

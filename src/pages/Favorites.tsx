@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import { ArticleItem } from '../components/ArticleItem';
-import { Offer } from '../types/offer';
 import { useAppSelector } from '../store/hooks/redux';
+import { Offer } from '../types/offer';
 
 export const FavoritesPage: React.FC = () => {
   const { offers } = useAppSelector((state) => state.offers);
@@ -9,10 +9,10 @@ export const FavoritesPage: React.FC = () => {
 
   const groupedFavorites = favorites.reduce<{ [city: string]: Offer[] }>(
     (acc, offer) => {
-      if (!acc[offer.city]) {
-        acc[offer.city] = [];
+      if (!acc[offer.city.name]) {
+        acc[offer.city.name] = [];
       }
-      acc[offer.city].push(offer);
+      acc[offer.city.name].push(offer);
       return acc;
     },
     {},
