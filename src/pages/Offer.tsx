@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { AmenitiesList } from '../components/OfferPageItems/Amenities';
 import { OfferGallery } from '../components/OfferPageItems/Gallery';
@@ -7,8 +7,12 @@ import { NearbyOffers } from '../components/OfferPageItems/NearbyOffers';
 import { OfferHeader } from '../components/OfferPageItems/OfferHeader';
 import { OfferInfo } from '../components/OfferPageItems/OfferInfo';
 import { ReviewsSection } from '../components/OfferPageItems/ReviewsSection';
-import { mockOffers } from '../mocks/offers';
-import { Offer } from '../types/offer';
+import Spinner from '../components/Spinner';
+import { useAppDispatch, useAppSelector } from '../store/hooks/redux';
+import { fetchNearbyOffers } from '../store/slices/nearby-slice';
+import { fetchOfferDetails, toggleFavoriteOffer } from '../store/slices/offer-slice';
+import { toggleFavorite } from '../store/slices/offers-slice';
+import { isDetailedOffer } from '../types/offer';
 
 type OfferPageProps = {
   onFavoriteToggle?: (offerId: string, isFavorite: boolean) => void;
@@ -17,48 +21,89 @@ type OfferPageProps = {
 export const OfferPage: React.FC<OfferPageProps> = ({ onFavoriteToggle }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [currentOffer, setCurrentOffer] = useState<Offer | null>(null);
-  const [nearbyOffers, setNearbyOffers] = useState<Offer[]>([]);
+  const dispatch = useAppDispatch();
+
+  const {
+    currentOffer,
+    loading: offerLoading,
+    error: offerError
+  } = useAppSelector((state) => state.detail);
+
+  const {
+    nearbyOffers,
+    loading: nearbyLoading,
+    error: nearbyError
+  } = useAppSelector((state) => state.nearby);
 
   useEffect(() => {
-    if (id) {
-      const foundOffer = mockOffers.find((offer) => offer.id === id);
-
-      if (foundOffer) {
-        setCurrentOffer(foundOffer);
-        const nearby = mockOffers
-          .filter(
-            (offer) =>
-              offer.city === foundOffer.city && offer.id !== foundOffer.id,
-          )
-          .slice(0, 3);
-        setNearbyOffers(nearby);
-      } else {
-        navigate('/404', { replace: true });
-      }
+    if (!id) {
+      navigate('/404', { replace: true });
+      return;
     }
-  }, [id, navigate]);
 
-  const handleFavoriteClick = () => {
+    dispatch(fetchOfferDetails(id));
+    dispatch(fetchNearbyOffers(id));
+  }, [id, dispatch, navigate]);
+
+  const handleFavoriteClick = useCallback(() => {
     if (!currentOffer) {
       return;
     }
 
-    onFavoriteToggle?.(currentOffer.id, !currentOffer.isFavorite);
-    setCurrentOffer((prev) =>
-      prev ? { ...prev, isFavorite: !prev.isFavorite } : null,
-    );
-  };
+    const newIsFavorite = !currentOffer.isFavorite;
+    dispatch(toggleFavorite(currentOffer.id));
+    dispatch(toggleFavoriteOffer(currentOffer.id));
+    onFavoriteToggle?.(currentOffer.id, newIsFavorite);
+  }, [currentOffer, dispatch, onFavoriteToggle]);
 
-  if (!currentOffer) {
+  const loading = offerLoading || nearbyLoading;
+  const error = offerError || nearbyError;
+
+  if (loading) {
     return (
       <main className="page__main page__main--offer">
         <div className="container">
-          <div className="loading">Loading...</div>
+          <Spinner />
         </div>
       </main>
     );
   }
+
+  if (error || !currentOffer) {
+    return (
+      <main className="page__main page__main--offer">
+        <div className="container">
+          <div className="error-message">
+            <h2>Не удалось загрузить предложение</h2>
+            <p>{error || 'Предложение не найдено'}</p>
+            <button
+              onClick={() => navigate('/')}
+              className="error-message__retry"
+            >
+              Вернуться на главную
+            </button>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  if (!isDetailedOffer(currentOffer)) {
+    return (
+      <main className="page__main page__main--offer">
+        <div className="container">
+          <div className="error-message">
+            <h2>Ошибка данных</h2>
+            <p>Получены неполные данные о предложении</p>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  const detailedOffer = currentOffer;
+
+  const currentNearbyOffers = nearbyOffers[id!] || [];
 
   const {
     title,
@@ -67,19 +112,20 @@ export const OfferPage: React.FC<OfferPageProps> = ({ onFavoriteToggle }) => {
     rating,
     isPremium,
     isFavorite,
-    bedrooms,
-    maxAdults,
-    amenities,
-    images,
-    host,
     description,
-    reviews,
-  } = currentOffer;
+    bedrooms,
+    goods,
+    host,
+    images,
+    maxAdults,
+  } = detailedOffer;
+
+  const galleryImages = images.length > 0 ? images : [];
 
   return (
     <main className="page__main page__main--offer">
       <section className="offer">
-        <OfferGallery images={images} />
+        <OfferGallery images={galleryImages} />
 
         <div className="offer__container container">
           <div className="offer__wrapper">
@@ -89,7 +135,6 @@ export const OfferPage: React.FC<OfferPageProps> = ({ onFavoriteToggle }) => {
               isFavorite={isFavorite}
               onFavoriteToggle={handleFavoriteClick}
             />
-
             <OfferInfo
               rating={rating}
               type={type}
@@ -98,18 +143,23 @@ export const OfferPage: React.FC<OfferPageProps> = ({ onFavoriteToggle }) => {
               price={price}
             />
 
-            <AmenitiesList amenities={amenities} />
+            {goods.length > 0 && <AmenitiesList amenities={goods} />}
 
-            <HostInfo host={host} description={description} />
-
-            <ReviewsSection reviews={reviews} />
+            {host && (
+              <HostInfo
+                host={{
+                  ...host,
+                  avatar: host.avatarUrl,
+                }}
+                description={description}
+              />
+            )}
+            <ReviewsSection reviews={[]} />
           </div>
         </div>
-
-        <section className="offer__map map"></section>
       </section>
 
-      <NearbyOffers offers={nearbyOffers} />
+      {currentNearbyOffers.length > 0 && <NearbyOffers offers={currentNearbyOffers} />}
     </main>
   );
 };

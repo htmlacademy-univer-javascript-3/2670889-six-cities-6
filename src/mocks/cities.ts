@@ -1,8 +1,8 @@
-export const cities = [
+import { City } from '../types/offer';
+
+export const cities: City[] = [
   {
-    id: 1,
     name: 'Paris',
-    href: '#',
     location: {
       latitude: 48.85661,
       longitude: 2.351499,
@@ -10,9 +10,7 @@ export const cities = [
     },
   },
   {
-    id: 2,
     name: 'Cologne',
-    href: '#',
     location: {
       latitude: 50.938361,
       longitude: 6.959974,
@@ -20,9 +18,7 @@ export const cities = [
     },
   },
   {
-    id: 3,
     name: 'Brussels',
-    href: '#',
     location: {
       latitude: 50.846557,
       longitude: 4.351697,
@@ -30,9 +26,7 @@ export const cities = [
     },
   },
   {
-    id: 4,
     name: 'Amsterdam',
-    href: '#',
     location: {
       latitude: 52.37454,
       longitude: 4.897976,
@@ -40,9 +34,7 @@ export const cities = [
     },
   },
   {
-    id: 5,
     name: 'Hamburg',
-    href: '#',
     location: {
       latitude: 53.550341,
       longitude: 10.000654,
@@ -50,9 +42,7 @@ export const cities = [
     },
   },
   {
-    id: 6,
     name: 'Dusseldorf',
-    href: '#',
     location: {
       latitude: 51.227741,
       longitude: 6.773456,

@@ -1,21 +1,19 @@
 import { useState } from 'react';
-import { City } from '../../types/city';
+import { City } from '../../types/offer';
 
 export type Props = {
   cities: City[];
   onCityChange?: (city: City) => void;
 };
 
-const TabItem: React.FC<City & { isActive: boolean; onClick: () => void }> = ({
+const TabItem: React.FC<{ name: string; isActive: boolean; onClick: () => void }> = ({
   name,
-  href,
   isActive,
   onClick,
 }) => (
   <li className="locations__item">
     <a
       className={`locations__item-link tabs__item ${isActive ? 'tabs__item--active' : ''}`}
-      href={href}
       onClick={(e) => {
         e.preventDefault();
         onClick();
@@ -41,10 +39,10 @@ export const Tabs: React.FC<Props> = ({ cities, onCityChange }) => {
           {cities.map((city) => (
             <TabItem
               {...city}
-              key={city.id}
-              isActive={city.id === cities[activeIndex]?.id}
+              key={city.name}
+              isActive={city.name === cities[activeIndex]?.name}
               onClick={() =>
-                handleTabClick(cities.findIndex((c) => c.id === city.id))}
+                handleTabClick(cities.findIndex((c) => c.name === city.name))}
             />
           ))}
         </ul>
