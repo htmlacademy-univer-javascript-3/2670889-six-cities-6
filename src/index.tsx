@@ -12,7 +12,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <Provider store={store}>
-      <BrowserRouter basename='/2670889-six-cities-6/'>
+      <BrowserRouter basename="/2670889-six-cities-6/">
         <App />
       </BrowserRouter>
     </Provider>
